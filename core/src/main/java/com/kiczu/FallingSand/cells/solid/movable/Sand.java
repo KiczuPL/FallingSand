@@ -2,9 +2,10 @@ package com.kiczu.FallingSand.cells.solid.movable;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class Sand extends MovableSolid{
+public class Sand extends MovableSolid {
 
-    public Sand(){
-        color= Color.YELLOW;
+    public Sand() {
+        color = Color.YELLOW;
+        density = 1442f;
     }
 }

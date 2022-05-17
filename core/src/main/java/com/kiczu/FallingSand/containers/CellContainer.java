@@ -8,25 +8,44 @@ import com.kiczu.FallingSand.utils.Point;
 
 public class CellContainer {
 
-    private Cell cell;
+    private Cell physicalCell;
     private Point position;
 
     public CellContainer(Point position) {
         this.position = position;
-        cell = EmptyCell.getInstance();
+        physicalCell = EmptyCell.getInstance();
     }
 
+    public Cell getPhysicalCell() {
+        return physicalCell;
+    }
 
-    public void setCell(Cell cell) {
-        this.cell = cell;
+    public void setPhysicalCell(Cell physicalCell) {
+        this.physicalCell = physicalCell;
     }
 
 
     public void draw(ShapeRenderer shapeRenderer) {
-        if (cell != null)
-            shapeRenderer.setColor(cell.getColor());
-        else
-            shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.setColor(physicalCell.getColor());
+
         shapeRenderer.rect(position.getX(), position.getY(), 1, 1);
+    }
+
+    public void update(GameMap gameMap) {
+        physicalCell.update(gameMap, this);
+    }
+
+    public Color getColor() {
+        return physicalCell.getColor();
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public boolean canCellMoveHere(Cell cell) {
+        if (this.physicalCell instanceof EmptyCell)
+            return true;
+        return cell.getDensity() > physicalCell.getDensity();
     }
 }

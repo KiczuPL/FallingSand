@@ -1,6 +1,8 @@
 package com.kiczu.FallingSand.cells;
 
 import com.badlogic.gdx.graphics.Color;
+import com.kiczu.FallingSand.containers.CellContainer;
+import com.kiczu.FallingSand.containers.GameMap;
 
 public class EmptyCell extends Cell {
     private static Cell emptyCell;
@@ -14,6 +16,11 @@ public class EmptyCell extends Cell {
             emptyCell = new EmptyCell();
         }
         return emptyCell;
+    }
+
+    @Override
+    public void update(GameMap matrix, CellContainer parentContainer){
+
     }
 
 

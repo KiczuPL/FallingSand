@@ -20,8 +20,8 @@ import com.kiczu.FallingSand.ui.MapActor;
 public class FallingSand extends ApplicationAdapter {
 
 	private final int chunkSize = 10;
-	private final int horizontalChunks = 600;
-	private final int verticalChunks = 400;
+	private final int horizontalChunks = 60;
+	private final int verticalChunks = 40;
 
 
 	public final float mapWidth = horizontalChunks * chunkSize;
@@ -71,8 +71,10 @@ public class FallingSand extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0f, 1, 1, 1f);
+		//Gdx.gl.glClearColor(0f, 1, 1, 1f);
 		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0, 0, 0, 1);
+
 		fpsLogger.log();
 		matrix.updateAll();
 		matrixStage.draw();
