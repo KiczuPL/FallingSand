@@ -13,10 +13,21 @@ public abstract class Fluid  extends Cell {
         Point destinationPointBottomRight = parentContainer.getPosition().getTranslatedCopy(1, -1);
         Point destinationPointRight = parentContainer.getPosition().getTranslatedCopy(1, 0);
         Point destinationPointLeft = parentContainer.getPosition().getTranslatedCopy(-1, 0);
-        if (tryMoveToPoint(matrix, parentContainer, destinationPointBottom)) ;
-        else if (tryMoveToPoint(matrix, parentContainer, destinationPointBottomLeft)) ;
-        else if (tryMoveToPoint(matrix, parentContainer, destinationPointBottomRight)) ;
-        else if (tryMoveToPoint(matrix, parentContainer, destinationPointRight)) ;
-        else if (tryMoveToPoint(matrix, parentContainer, destinationPointLeft)) ;
+
+        if (canMoveToPoint(matrix, parentContainer, destinationPointBottom)){
+            moveToPoint(matrix,parentContainer,destinationPointBottom);
+        }
+        else if (canMoveToPoint(matrix, parentContainer, destinationPointBottomLeft) && canMoveToPoint(matrix, parentContainer, destinationPointLeft)){
+            moveToPoint(matrix,parentContainer,destinationPointBottomLeft);
+        }
+        else if (canMoveToPoint(matrix, parentContainer, destinationPointBottomRight) && canMoveToPoint(matrix, parentContainer, destinationPointRight)) {
+            moveToPoint(matrix,parentContainer,destinationPointBottomRight);
+        }
+        else if (canMoveToPoint(matrix, parentContainer, destinationPointRight)) {
+            moveToPoint(matrix,parentContainer,destinationPointRight);
+        }
+        else if (canMoveToPoint(matrix, parentContainer, destinationPointLeft)) {
+            moveToPoint(matrix,parentContainer,destinationPointLeft);
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.kiczu.FallingSand.cells.solid.movable.Sand;
 import com.kiczu.FallingSand.utils.Point;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GameMap {
@@ -14,6 +15,8 @@ public class GameMap {
     private int worldHeight;
 
     private int chunkSize;
+
+    private ArrayList<Integer> CRAP;
 
     private List<CellContainer> containers;
 
@@ -29,14 +32,19 @@ public class GameMap {
             containers.add(new CellContainer(getPointFromIndex(i)));
         }
 
-        for (int i = 0; i < size; i += worldWidth/2) {
+        for (int i = 0; i < size; i += worldWidth / 2) {
             containers.get(i).setPhysicalCell(new Sand());
         }
-        for (int i =worldHeight/2; i < worldHeight/2+100; i ++) {
-            for(int j=worldWidth/2;j<worldWidth/2+100;j++){
-                containers.get(i*worldWidth+j).setPhysicalCell(new Water());
+        for (int i = worldHeight / 2; i < worldHeight - 3; i++) {
+            for (int j = worldWidth / 2; j < worldWidth - 3; j++) {
+                containers.get(i * worldWidth + j).setPhysicalCell(new Water());
             }
         }
+        CRAP = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            CRAP.add(i);
+        }
+
     }
 
     public Point getPointFromIndex(int index) {
@@ -84,8 +92,21 @@ public class GameMap {
     }
 
     public void updateAll() {
+        Collections.shuffle(CRAP);
+/*
         for (CellContainer c : containers) {
             c.update(this);
+        }
+        for (CellContainer c : containers) {
+            c.isUpdated(false);
+        }
+*/
+        for (Integer i : CRAP) {
+            containers.get(i).update(this);
+        }
+
+        for (Integer i : CRAP) {
+            containers.get(i).isUpdated(false);
         }
     }
 }

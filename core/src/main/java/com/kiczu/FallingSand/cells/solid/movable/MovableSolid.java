@@ -12,9 +12,18 @@ public class MovableSolid extends Cell {
         Point destinationPointBottom = parentContainer.getPosition().getTranslatedCopy(0, -1);
         Point destinationPointBottomLeft = parentContainer.getPosition().getTranslatedCopy(-1, -1);
         Point destinationPointBottomRight = parentContainer.getPosition().getTranslatedCopy(1, -1);
-        if (tryMoveToPoint(matrix, parentContainer, destinationPointBottom)) ;
-        else if (tryMoveToPoint(matrix, parentContainer, destinationPointBottomLeft)) ;
-        else if (tryMoveToPoint(matrix, parentContainer, destinationPointBottomRight)) ;
+
+
+        if (canMoveToPoint(matrix, parentContainer, destinationPointBottom)){
+         moveToPoint(matrix,parentContainer,destinationPointBottom);
+        }
+        else if (canMoveToPoint(matrix, parentContainer, destinationPointBottomLeft)){
+            moveToPoint(matrix,parentContainer,destinationPointBottomLeft);
+        }
+        else if (canMoveToPoint(matrix, parentContainer, destinationPointBottomRight)) {
+            moveToPoint(matrix,parentContainer,destinationPointBottomRight);
+        }
+
     }
 
 

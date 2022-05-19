@@ -10,6 +10,7 @@ public class CellContainer {
 
     private Cell physicalCell;
     private Point position;
+    private boolean isUpdated = false;
 
     public CellContainer(Point position) {
         this.position = position;
@@ -21,6 +22,7 @@ public class CellContainer {
     }
 
     public void setPhysicalCell(Cell physicalCell) {
+        isUpdated = true;
         this.physicalCell = physicalCell;
     }
 
@@ -32,7 +34,9 @@ public class CellContainer {
     }
 
     public void update(GameMap gameMap) {
-        physicalCell.update(gameMap, this);
+        //if (!isUpdated)
+            physicalCell.update(gameMap, this);
+        //isUpdated=true;
     }
 
     public Color getColor() {
@@ -43,9 +47,19 @@ public class CellContainer {
         return position;
     }
 
+    public boolean isUpdated() {
+        return isUpdated;
+    }
+
+    public void isUpdated(boolean isUpdated) {
+        this.isUpdated = isUpdated;
+    }
+
     public boolean canCellMoveHere(Cell cell) {
         if (this.physicalCell instanceof EmptyCell)
             return true;
+        //if (isUpdated)
+            //return false;
         return cell.getDensity() > physicalCell.getDensity();
     }
 }

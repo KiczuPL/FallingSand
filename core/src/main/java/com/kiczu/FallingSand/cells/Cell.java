@@ -16,23 +16,23 @@ public abstract class Cell {
         return color;
     }
 
-    public float getDensity(){
+    public float getDensity() {
         return density;
     }
 
     public abstract void update(GameMap matrix, CellContainer parentContainer);
 
-    protected boolean tryMoveToPoint(GameMap matrix, CellContainer parentContainer, Point destinationPoint) {
-        if (matrix.isPointInBounds(destinationPoint)) {
-            CellContainer destination = matrix.getCellContainer(destinationPoint);
+    protected boolean canMoveToPoint(GameMap matrix, CellContainer parentContainer, Point destinationPoint) {
+        if (!matrix.isPointInBounds(destinationPoint))
+            return false;
+        CellContainer destination = matrix.getCellContainer(destinationPoint);
 
-            if (destination.canCellMoveHere(this)) {
-                matrix.swapCellContainersContents(parentContainer, destination);
-                return true;
-            } else
-                return false;
-        }
-        return false;
+        return destination.canCellMoveHere(this);
+    }
+
+    protected void moveToPoint(GameMap matrix, CellContainer parentContainer, Point destinationPoint) {
+        CellContainer destination = matrix.getCellContainer(destinationPoint);
+        matrix.swapCellContainersContents(parentContainer, destination);
     }
 
 }
