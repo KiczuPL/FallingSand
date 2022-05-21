@@ -7,6 +7,10 @@ import com.kiczu.FallingSand.utils.Point;
 
 public class MovableSolid extends Cell {
 
+    public MovableSolid(Point position){
+        super(position);
+    }
+
     @Override
     public void update(GameMap matrix, CellContainer parentContainer) {
         Point destinationPointBottom = parentContainer.getPosition().getTranslatedCopy(0, -1);

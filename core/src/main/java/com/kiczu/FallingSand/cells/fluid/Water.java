@@ -1,11 +1,13 @@
 package com.kiczu.FallingSand.cells.fluid;
 
 import com.badlogic.gdx.graphics.Color;
+import com.kiczu.FallingSand.utils.Point;
 
 public class Water extends Fluid {
-    public Water() {
+    public Water(Point position) {
+        super(position);
         color = Color.BLUE;
-        density = 997f;
+        mass = 997f;
     }
 
 }

@@ -60,6 +60,6 @@ public class CellContainer {
             return true;
         //if (isUpdated)
             //return false;
-        return cell.getDensity() > physicalCell.getDensity();
+        return cell.getMass() > physicalCell.getMass();
     }
 }

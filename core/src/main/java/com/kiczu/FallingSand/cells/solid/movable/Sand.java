@@ -1,11 +1,13 @@
 package com.kiczu.FallingSand.cells.solid.movable;
 
 import com.badlogic.gdx.graphics.Color;
+import com.kiczu.FallingSand.utils.Point;
 
 public class Sand extends MovableSolid {
 
-    public Sand() {
+    public Sand(Point position) {
+        super(position);
         color = Color.YELLOW;
-        density = 1442f;
+        mass = 1442f;
     }
 }

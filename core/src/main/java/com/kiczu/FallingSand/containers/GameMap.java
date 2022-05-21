@@ -33,11 +33,11 @@ public class GameMap {
         }
 
         for (int i = 0; i < size; i += worldWidth / 2) {
-            containers.get(i).setPhysicalCell(new Sand());
+            containers.get(i).setPhysicalCell(new Sand(getPointFromIndex(i)));
         }
         for (int i = worldHeight / 2; i < worldHeight - 3; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 3; j++) {
-                containers.get(i * worldWidth + j).setPhysicalCell(new Water());
+                containers.get(i * worldWidth + j).setPhysicalCell(new Water(new Point(i,j)));
             }
         }
         CRAP = new ArrayList<>(size);
@@ -67,6 +67,8 @@ public class GameMap {
             return false;
         return true;
     }
+
+
 
 
     public void swapCellContainersContents(CellContainer source, CellContainer destination) {
