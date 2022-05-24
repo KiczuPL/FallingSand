@@ -9,13 +9,13 @@ import com.kiczu.FallingSand.utils.Point;
 public abstract class Cell {
 
 
-    protected Point position;
+    protected Vector2 position;
     protected Color color;
     protected float mass;
 
     protected Vector2 speed;
 
-    public Cell(Point position) {
+    public Cell(Vector2 position) {
         this.position = position;
     }
 

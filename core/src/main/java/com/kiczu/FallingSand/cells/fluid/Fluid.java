@@ -1,5 +1,6 @@
 package com.kiczu.FallingSand.cells.fluid;
 
+import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
@@ -7,7 +8,7 @@ import com.kiczu.FallingSand.utils.Point;
 
 public abstract class Fluid  extends Cell {
 
-    public Fluid(Point position){
+    public Fluid(Vector2 position){
         super(position);
     }
     @Override

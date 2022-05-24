@@ -1,5 +1,6 @@
 package com.kiczu.FallingSand.cells.solid.movable;
 
+import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
@@ -7,7 +8,7 @@ import com.kiczu.FallingSand.utils.Point;
 
 public class MovableSolid extends Cell {
 
-    public MovableSolid(Point position){
+    public MovableSolid(Vector2 position){
         super(position);
     }
 

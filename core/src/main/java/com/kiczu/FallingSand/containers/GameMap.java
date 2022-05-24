@@ -1,6 +1,7 @@
 package com.kiczu.FallingSand.containers;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.cells.fluid.Water;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
@@ -16,7 +17,7 @@ public class GameMap {
 
     private int chunkSize;
 
-    private ArrayList<Integer> CRAP;
+    private ArrayList<Integer> indexes;
 
     private List<CellContainer> containers;
 
@@ -33,16 +34,16 @@ public class GameMap {
         }
 
         for (int i = 0; i < size; i += worldWidth / 2) {
-            containers.get(i).setPhysicalCell(new Sand(getPointFromIndex(i)));
+            containers.get(i).setPhysicalCell(new Sand(new Vector2(i - i / worldWidth * worldWidth,i / worldWidth)));
         }
         for (int i = worldHeight / 2; i < worldHeight - 3; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 3; j++) {
-                containers.get(i * worldWidth + j).setPhysicalCell(new Water(new Point(i,j)));
+                containers.get(i * worldWidth + j).setPhysicalCell(new Water(new Vector2(i,j)));
             }
         }
-        CRAP = new ArrayList<>(size);
+        indexes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            CRAP.add(i);
+            indexes.add(i);
         }
 
     }
@@ -69,8 +70,6 @@ public class GameMap {
     }
 
 
-
-
     public void swapCellContainersContents(CellContainer source, CellContainer destination) {
         Cell tmp = source.getPhysicalCell();
         source.setPhysicalCell(destination.getPhysicalCell());
@@ -93,8 +92,12 @@ public class GameMap {
         shapeRenderer.end();
     }
 
+    public void iterateAndUpdate(Cell cell){
+
+    }
+
     public void updateAll() {
-        Collections.shuffle(CRAP);
+        Collections.shuffle(indexes);
 /*
         for (CellContainer c : containers) {
             c.update(this);
@@ -103,11 +106,11 @@ public class GameMap {
             c.isUpdated(false);
         }
 */
-        for (Integer i : CRAP) {
+        for (Integer i : indexes) {
             containers.get(i).update(this);
         }
 
-        for (Integer i : CRAP) {
+        for (Integer i : indexes) {
             containers.get(i).isUpdated(false);
         }
     }

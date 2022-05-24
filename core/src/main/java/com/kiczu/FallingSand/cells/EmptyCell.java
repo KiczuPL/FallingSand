@@ -1,6 +1,7 @@
 package com.kiczu.FallingSand.cells;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
 import com.kiczu.FallingSand.utils.Point;
@@ -9,7 +10,7 @@ public class EmptyCell extends Cell {
     private static Cell emptyCell;
 
     private EmptyCell() {
-        super(new Point(-1,-1));
+        super(new Vector2(-1f,-1f));
         color = Color.BLACK;
     }
 
