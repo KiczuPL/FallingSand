@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
-import com.kiczu.FallingSand.utils.Point;
 
 public class EmptyCell extends Cell {
     private static Cell emptyCell;

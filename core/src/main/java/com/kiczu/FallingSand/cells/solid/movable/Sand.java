@@ -2,7 +2,6 @@ package com.kiczu.FallingSand.cells.solid.movable;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.kiczu.FallingSand.utils.Point;
 
 public class Sand extends MovableSolid {
 

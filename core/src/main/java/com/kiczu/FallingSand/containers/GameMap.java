@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.cells.fluid.Water;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
-import com.kiczu.FallingSand.utils.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,14 +32,15 @@ public class GameMap {
             containers.add(new CellContainer(getPointFromIndex(i)));
         }
 
-        for (int i = 0; i < size; i += worldWidth / 2) {
-            containers.get(i).setPhysicalCell(new Sand(new Vector2(i - i / worldWidth * worldWidth,i / worldWidth)));
-        }
-        for (int i = worldHeight / 2; i < worldHeight - 3; i++) {
-            for (int j = worldWidth / 2; j < worldWidth - 3; j++) {
-                containers.get(i * worldWidth + j).setPhysicalCell(new Water(new Vector2(i,j)));
+
+        for (int i = worldHeight / 2; i < worldHeight - 20; i++) {
+            for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
+                Vector2 v = new Vector2(j,i);
+                setCellAtPosition(v,new Water(v));
             }
         }
+
+
         indexes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             indexes.add(i);
@@ -48,32 +48,41 @@ public class GameMap {
 
     }
 
-    public Point getPointFromIndex(int index) {
+    public Vector2 getPointFromIndex(int index) {
         int tmp = index / worldWidth;
-        return new Point(index - tmp * worldWidth, tmp);
+        return new Vector2(index - tmp * worldWidth, tmp);
     }
 
-    public int getIndexFromPoint(Point p) {
-        return p.getY() * worldWidth + p.getX();
+    public int getIndexFromPoint(Vector2 p) {
+        return (int)p.y * worldWidth + (int)p.x;
     }
 
-    public CellContainer getCellContainer(Point p) {
+    public CellContainer getCellContainer(Vector2 p) {
         return containers.get(getIndexFromPoint(p));
     }
 
-    public boolean isPointInBounds(Point p) {
-        if (p.getX() < 0 || p.getX() > worldWidth)
+    public boolean isPointInBounds(Vector2 p) {
+        if (p.x < 0 || p.x >= worldWidth)
             return false;
-        if (p.getY() < 0 || p.getY() > worldWidth)
+        if (p.y < 0 || p.y >= worldHeight)
             return false;
         return true;
     }
 
+    public void setCellAtPosition(Vector2 position, Cell cell) {
+        getCellContainer(position).setPhysicalCell(cell);
+    }
 
-    public void swapCellContainersContents(CellContainer source, CellContainer destination) {
-        Cell tmp = source.getPhysicalCell();
-        source.setPhysicalCell(destination.getPhysicalCell());
-        destination.setPhysicalCell(tmp);
+    public Cell getCellAtPosition(Vector2 position, Cell cell) {
+        return getCellContainer(position).getPhysicalCell();
+    }
+
+    public void swapCellsAtPosition(Vector2 source, Vector2 target) {
+        CellContainer s = getCellContainer(source);
+        CellContainer t = getCellContainer(target);
+        Cell tmp = s.getPhysicalCell();
+        s.setPhysicalCell(t.getPhysicalCell());
+        t.setPhysicalCell(tmp);
     }
 
 
@@ -83,16 +92,16 @@ public class GameMap {
         for (CellContainer container : containers) {
 
             shapeRenderer.setColor(container.getColor());
-            Point position = container.getPosition();
+            Vector2 position = container.getPosition();
 
-            shapeRenderer.rect(position.getX(), position.getY(), 10, 10);
+            shapeRenderer.rect(position.x, position.y, 10, 10);
 
             //container.draw(shapeRenderer);
         }
         shapeRenderer.end();
     }
 
-    public void iterateAndUpdate(Cell cell){
+    public void iterateAndUpdate(Cell cell) {
 
     }
 

@@ -4,21 +4,23 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
-import com.kiczu.FallingSand.utils.Point;
 
 public abstract class Cell {
 
 
     protected Vector2 position;
+    protected Vector2 velocity;
     protected Color color;
     protected float mass;
+    protected float frictionFactor;
+    protected boolean isUpdated;
 
-    protected Vector2 speed;
 
     public Cell(Vector2 position) {
         this.position = position;
+        isUpdated = false;
+        velocity = new Vector2(0, 0);
     }
-
 
     public Color getColor() {
         return color;
@@ -28,23 +30,30 @@ public abstract class Cell {
         return mass;
     }
 
-    public Vector2 getSpeed() {
-        return speed;
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
+
+    public Vector2 getPosition(){
+        return position;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
     }
 
     public abstract void update(GameMap matrix, CellContainer parentContainer);
 
-    protected boolean canMoveToPoint(GameMap matrix, CellContainer parentContainer, Point destinationPoint) {
-        if (!matrix.isPointInBounds(destinationPoint))
+    protected boolean canMoveToPoint(GameMap matrix, CellContainer parentContainer, Vector2 destination) {
+        if (!matrix.isPointInBounds(destination))
             return false;
-        CellContainer destination = matrix.getCellContainer(destinationPoint);
+        CellContainer container = matrix.getCellContainer(destination);
 
-        return destination.canCellMoveHere(this);
+        return container.canCellMoveHere(this);
     }
 
-    protected void moveToPoint(GameMap matrix, CellContainer parentContainer, Point destinationPoint) {
-        CellContainer destination = matrix.getCellContainer(destinationPoint);
-        matrix.swapCellContainersContents(parentContainer, destination);
+    protected void moveToPoint(GameMap matrix, CellContainer parentContainer, Vector2 destinationVector2) {
+        matrix.swapCellsAtPosition(this.position,destinationVector2);
     }
 
 }

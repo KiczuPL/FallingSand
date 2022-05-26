@@ -2,17 +2,17 @@ package com.kiczu.FallingSand.containers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.cells.EmptyCell;
-import com.kiczu.FallingSand.utils.Point;
 
 public class CellContainer {
 
     private Cell physicalCell;
-    private Point position;
+    private Vector2 position;
     private boolean isUpdated = false;
 
-    public CellContainer(Point position) {
+    public CellContainer(Vector2 position) {
         this.position = position;
         physicalCell = EmptyCell.getInstance();
     }
@@ -24,26 +24,25 @@ public class CellContainer {
     public void setPhysicalCell(Cell physicalCell) {
         isUpdated = true;
         this.physicalCell = physicalCell;
+        physicalCell.setPosition(this.position.cpy());
     }
 
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(physicalCell.getColor());
 
-        shapeRenderer.rect(position.getX(), position.getY(), 1, 1);
+        shapeRenderer.rect(position.x, position.y, 1, 1);
     }
 
     public void update(GameMap gameMap) {
-        //if (!isUpdated)
             physicalCell.update(gameMap, this);
-        //isUpdated=true;
     }
 
     public Color getColor() {
         return physicalCell.getColor();
     }
 
-    public Point getPosition() {
+    public Vector2 getPosition() {
         return position;
     }
 
