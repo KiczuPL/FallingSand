@@ -40,6 +40,12 @@ public class GameMap {
             }
         }
 
+        for (int i = 0; i < worldHeight - 100; i++) {
+                Vector2 v = new Vector2(worldWidth/3,i);
+                setCellAtPosition(v,new Sand(v));
+
+        }
+
 
         indexes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {

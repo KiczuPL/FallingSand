@@ -16,7 +16,7 @@ public abstract class Fluid extends Cell {
     public void update(GameMap matrix, CellContainer parentContainer) {
         if (isUpdated)
             return;
-
+        isUpdated=true;
         Gravity.applyGravity(this);
 
         Vector2 desiredPosition = position.cpy().add(velocity);
@@ -36,35 +36,43 @@ public abstract class Fluid extends Cell {
         int signX = deltaX < 0 ? -1 : 1;
         int signY = deltaY < 0 ? -1 : 1;
         if (isDeltaXBigger) {
+            float slope = (float) deltaY / (float) deltaX;
             for (int i = signX; Math.abs(i) < Math.abs(deltaX); i += signX) {
-                float slope = (float) deltaY / (float) deltaX;
                 int value = (int) (slope * i);
                 currentPosition.x = posX + i;
                 currentPosition.y = posY + value;
                 if (matrix.isPointInBounds(currentPosition)) {
                     if(canMoveToPoint(matrix,parentContainer,currentPosition)){
                         lastValidPosition = currentPosition.cpy();
+                    }else{
+                        velocity.x=0;
+                        velocity.y=0;
+                        break;
                     }
                 } else {
                     break;
                 }
             }
         } else {
+            float slope = (float) deltaX / (float) deltaY;
             for (int i = signY; Math.abs(i) < Math.abs(deltaY); i += signY) {
-                float slope = (float) deltaX / (float) deltaY;
                 int value = (int) (slope * i);
                 currentPosition.x = posX + value;
                 currentPosition.y = posY + i;
                 if (matrix.isPointInBounds(currentPosition)) {
                     if(canMoveToPoint(matrix,parentContainer,currentPosition)){
                         lastValidPosition = currentPosition.cpy();
+                    }else{
+                        velocity.x=0;
+                        velocity.y=0;
+                        break;
                     }
                 } else {
                     break;
                 }
             }
-        }
-
+        }//TODO: Trzeba dodać przekierowanie prędkości po zderzeniu
+        if(!position.epsilonEquals(lastValidPosition))
         moveToPoint(matrix, parentContainer, lastValidPosition);
 
     }

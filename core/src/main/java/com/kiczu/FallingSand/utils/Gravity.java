@@ -8,7 +8,7 @@ public abstract class Gravity {
 
     public static void applyGravity(Cell cell){
         Vector2 speed = cell.getVelocity();
-        speed.add(-0.5f,1f);
+        speed.add(-1.7f,-1f);
     }
 
 }

@@ -34,12 +34,16 @@ public abstract class Cell {
         this.position = position;
     }
 
-    public Vector2 getPosition(){
+    public Vector2 getPosition() {
         return position;
     }
 
     public Vector2 getVelocity() {
         return velocity;
+    }
+
+    public void isUpdated(boolean isUpdated) {
+        this.isUpdated = isUpdated;
     }
 
     public abstract void update(GameMap matrix, CellContainer parentContainer);
@@ -53,7 +57,7 @@ public abstract class Cell {
     }
 
     protected void moveToPoint(GameMap matrix, CellContainer parentContainer, Vector2 destinationVector2) {
-        matrix.swapCellsAtPosition(this.position,destinationVector2);
+        matrix.swapCellsAtPosition(this.position, destinationVector2);
     }
 
 }
