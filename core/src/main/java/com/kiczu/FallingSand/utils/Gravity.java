@@ -2,14 +2,13 @@ package com.kiczu.FallingSand.utils;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
-import com.kiczu.FallingSand.containers.GameMap;
 
 public abstract class Gravity {
 
 
     public static void applyGravity(Cell cell){
         Vector2 speed = cell.getVelocity();
-        speed.add(-1f,-1f);
+        speed.add(-0.5f,1f);
     }
 
 }

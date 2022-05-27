@@ -36,7 +36,7 @@ public abstract class Fluid extends Cell {
         int signX = deltaX < 0 ? -1 : 1;
         int signY = deltaY < 0 ? -1 : 1;
         if (isDeltaXBigger) {
-            for (int i = signX; i > deltaX; i += signX) {
+            for (int i = signX; Math.abs(i) < Math.abs(deltaX); i += signX) {
                 float slope = (float) deltaY / (float) deltaX;
                 int value = (int) (slope * i);
                 currentPosition.x = posX + i;
@@ -50,11 +50,11 @@ public abstract class Fluid extends Cell {
                 }
             }
         } else {
-            for (int i = signY; i > deltaY; i += signY) {
+            for (int i = signY; Math.abs(i) < Math.abs(deltaY); i += signY) {
                 float slope = (float) deltaX / (float) deltaY;
                 int value = (int) (slope * i);
-                currentPosition.x = posY + i;
-                currentPosition.y = posX + value;
+                currentPosition.x = posX + value;
+                currentPosition.y = posY + i;
                 if (matrix.isPointInBounds(currentPosition)) {
                     if(canMoveToPoint(matrix,parentContainer,currentPosition)){
                         lastValidPosition = currentPosition.cpy();
