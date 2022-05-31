@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.cells.fluid.Water;
+import com.kiczu.FallingSand.cells.solid.immovable.Wood;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
 
 import java.util.ArrayList;
@@ -35,14 +36,21 @@ public class GameMap {
 
         for (int i = worldHeight / 2; i < worldHeight - 20; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
-                Vector2 v = new Vector2(j,i);
-                setCellAtPosition(v,new Water(v));
+                Vector2 v = new Vector2(j, i);
+                setCellAtPosition(v, new Sand(v));
+            }
+        }
+
+        for (int i = 0; i < worldHeight / 2 - 20; i++) {
+            for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
+                Vector2 v = new Vector2(j, i);
+                setCellAtPosition(v, new Water(v));
             }
         }
 
         for (int i = 0; i < worldHeight - 100; i++) {
-                Vector2 v = new Vector2(worldWidth/3,i);
-                setCellAtPosition(v,new Sand(v));
+            Vector2 v = new Vector2(worldWidth / 3, i);
+            setCellAtPosition(v, new Wood(v));
 
         }
 
@@ -60,7 +68,7 @@ public class GameMap {
     }
 
     public int getIndexFromPoint(Vector2 p) {
-        return (int)p.y * worldWidth + (int)p.x;
+        return (int) p.y * worldWidth + (int) p.x;
     }
 
     public CellContainer getCellContainer(Vector2 p) {
@@ -79,7 +87,7 @@ public class GameMap {
         getCellContainer(position).setPhysicalCell(cell);
     }
 
-    public Cell getCellAtPosition(Vector2 position, Cell cell) {
+    public Cell getCellAtPosition(Vector2 position) {
         return getCellContainer(position).getPhysicalCell();
     }
 

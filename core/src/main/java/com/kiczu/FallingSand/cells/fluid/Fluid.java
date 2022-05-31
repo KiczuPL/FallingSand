@@ -16,7 +16,7 @@ public abstract class Fluid extends Cell {
     public void update(GameMap matrix, CellContainer parentContainer) {
         if (isUpdated)
             return;
-        isUpdated=true;
+        isUpdated = true;
         Gravity.applyGravity(this);
 
         Vector2 desiredPosition = position.cpy().add(velocity);
@@ -42,11 +42,10 @@ public abstract class Fluid extends Cell {
                 currentPosition.x = posX + i;
                 currentPosition.y = posY + value;
                 if (matrix.isPointInBounds(currentPosition)) {
-                    if(canMoveToPoint(matrix,parentContainer,currentPosition)){
+                    if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
-                    }else{
-                        velocity.x=0;
-                        velocity.y=0;
+                    } else {
+                        processCollision(currentPosition, lastValidPosition, matrix);
                         break;
                     }
                 } else {
@@ -60,24 +59,23 @@ public abstract class Fluid extends Cell {
                 currentPosition.x = posX + value;
                 currentPosition.y = posY + i;
                 if (matrix.isPointInBounds(currentPosition)) {
-                    if(canMoveToPoint(matrix,parentContainer,currentPosition)){
+                    if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
-                    }else{
-                        velocity.x=0;
-                        velocity.y=0;
+                    } else {
+                        processCollision(currentPosition, lastValidPosition, matrix);
                         break;
                     }
                 } else {
                     break;
                 }
             }
-        }//TODO: Trzeba dodać przekierowanie prędkości po zderzeniu
-        if(!position.epsilonEquals(lastValidPosition))
-        moveToPoint(matrix, parentContainer, lastValidPosition);
+        }//TODO: Trzeba dodać przekierowanie prędkości po zderzeniu (znormalizować dwa wektory, odjąć od siebie i wtedy wymnożyć?)
+        if (!position.epsilonEquals(lastValidPosition))
+            moveToPoint(matrix, lastValidPosition);
 
     }
 
-    private void iterateAndMove(int deltaX, int deltaY) {
+    private void processCollision(Vector2 neighbourPosition, Vector2 lastValidPosition, GameMap matrix) {
 
     }
 

@@ -48,6 +48,10 @@ public abstract class Cell {
 
     public abstract void update(GameMap matrix, CellContainer parentContainer);
 
+    protected boolean isPositionEmpty(GameMap matrix, Vector2 destination){
+        return matrix.getCellAtPosition(destination) instanceof EmptyCell;
+    }
+
     protected boolean canMoveToPoint(GameMap matrix, CellContainer parentContainer, Vector2 destination) {
         if (!matrix.isPointInBounds(destination))
             return false;
@@ -56,7 +60,7 @@ public abstract class Cell {
         return container.canCellMoveHere(this);
     }
 
-    protected void moveToPoint(GameMap matrix, CellContainer parentContainer, Vector2 destinationVector2) {
+    protected void moveToPoint(GameMap matrix, Vector2 destinationVector2) {
         matrix.swapCellsAtPosition(this.position, destinationVector2);
     }
 
