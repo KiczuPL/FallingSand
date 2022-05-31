@@ -5,8 +5,10 @@ import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
 import com.kiczu.FallingSand.utils.Gravity;
+import com.kiczu.FallingSand.utils.RandomGenerator;
 
 public abstract class Fluid extends Cell {
+    protected float dispersionFactor;
 
     public Fluid(Vector2 position) {
         super(position);
@@ -17,9 +19,14 @@ public abstract class Fluid extends Cell {
         if (isUpdated)
             return;
         isUpdated = true;
-        Gravity.applyGravity(this);
+
 
         Vector2 desiredPosition = position.cpy().add(velocity);
+        Vector2 neighbourBelow = position.cpy().sub(0, 1);
+        if (matrix.getCellAtPosition(neighbourBelow).getMass() >= mass) {
+            desiredPosition = position.cpy().add( RandomGenerator.getRandomBoolean() ? -dispersionFactor : dispersionFactor,0);
+        }
+
         Vector2 lastValidPosition = position.cpy();
         Vector2 currentPosition = position.cpy();
 
@@ -28,8 +35,12 @@ public abstract class Fluid extends Cell {
 
         int targetX = (int) desiredPosition.x;
         int targetY = (int) desiredPosition.y;
+
+
         int deltaX = (int) (desiredPosition.x - position.x);
         int deltaY = (int) (desiredPosition.y - position.y);
+
+        boolean collisionProcedured = false;
 
 
         boolean isDeltaXBigger = Math.abs(deltaX) >= Math.abs(deltaY);
@@ -45,10 +56,11 @@ public abstract class Fluid extends Cell {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        processCollision(currentPosition, lastValidPosition, matrix);
+                        collisionProcedured = collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
                         break;
                     }
                 } else {
+                    collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
                     break;
                 }
             }
@@ -62,7 +74,8 @@ public abstract class Fluid extends Cell {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        processCollision(currentPosition, lastValidPosition, matrix);
+                        velocity.x = -Gravity.x;
+                        velocity.y = -Gravity.y;
                         break;
                     }
                 } else {
@@ -70,13 +83,13 @@ public abstract class Fluid extends Cell {
                 }
             }
         }//TODO: Trzeba dodać przekierowanie prędkości po zderzeniu (znormalizować dwa wektory, odjąć od siebie i wtedy wymnożyć?)
-        if (!position.epsilonEquals(lastValidPosition))
+        if (!position.epsilonEquals(lastValidPosition) && !collisionProcedured)
             moveToPoint(matrix, lastValidPosition);
-
+        Gravity.applyGravity(this);
     }
 
-    private void processCollision(Vector2 neighbourPosition, Vector2 lastValidPosition, GameMap matrix) {
-
+    private boolean processCollision(Vector2 neighbourPosition, Vector2 lastValidPosition, GameMap matrix) {
+        return false;
     }
 
 }

@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.cells.fluid.Water;
+import com.kiczu.FallingSand.cells.solid.immovable.Wall;
 import com.kiczu.FallingSand.cells.solid.immovable.Wood;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
+import com.kiczu.FallingSand.utils.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,11 +39,11 @@ public class GameMap {
         for (int i = worldHeight / 2; i < worldHeight - 20; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
                 Vector2 v = new Vector2(j, i);
-                setCellAtPosition(v, new Sand(v));
+                //setCellAtPosition(v, new Sand(v));
             }
         }
 
-        for (int i = 0; i < worldHeight / 2 - 20; i++) {
+        for (int i = 5; i < worldHeight / 2 - 20; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
                 Vector2 v = new Vector2(j, i);
                 setCellAtPosition(v, new Water(v));
@@ -54,13 +56,44 @@ public class GameMap {
 
         }
 
-
+        setUpWalls();
         indexes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             indexes.add(i);
         }
 
     }
+
+
+    private void setUpWalls() {
+        Vector2 v = new Vector2(0, 0);
+        for (int i = 0; i < worldWidth; i++) {
+            v.x = i;
+            v.y = 0;
+            setCellAtPosition(v, new Wall(v));
+        }
+
+        for (int i = 0; i < worldWidth; i++) {
+            v.x = i;
+            v.y = worldHeight-1;
+            setCellAtPosition(v, new Wall(v));
+        }
+
+
+        for (int i = 0; i < worldHeight; i++) {
+            v.x = 0;
+            v.y = i;
+            setCellAtPosition(v, new Wall(v));
+        }
+
+        for (int i = 0; i < worldHeight; i++) {
+            v.x = worldWidth-1;
+            v.y = i;
+            setCellAtPosition(v, new Wall(v));
+        }
+
+    }
+
 
     public Vector2 getPointFromIndex(int index) {
         int tmp = index / worldWidth;
@@ -76,9 +109,9 @@ public class GameMap {
     }
 
     public boolean isPointInBounds(Vector2 p) {
-        if (p.x < 0 || p.x >= worldWidth)
+        if (p.x < 1 || p.x >= worldWidth - 1)
             return false;
-        if (p.y < 0 || p.y >= worldHeight)
+        if (p.y < 1 || p.y >= worldHeight - 1)
             return false;
         return true;
     }
@@ -115,12 +148,8 @@ public class GameMap {
         shapeRenderer.end();
     }
 
-    public void iterateAndUpdate(Cell cell) {
-
-    }
-
     public void updateAll() {
-        Collections.shuffle(indexes);
+        Collections.shuffle(indexes, RandomGenerator.getInstance());
 /*
         for (CellContainer c : containers) {
             c.update(this);

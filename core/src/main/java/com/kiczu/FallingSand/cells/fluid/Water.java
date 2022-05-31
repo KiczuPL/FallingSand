@@ -8,6 +8,7 @@ public class Water extends Fluid {
         super(position);
         color = Color.BLUE;
         mass = 997f;
+        dispersionFactor = 5f;
     }
 
 }
