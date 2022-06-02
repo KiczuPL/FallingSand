@@ -12,7 +12,7 @@ public abstract class Cell {
     protected Vector2 velocity;
     protected Color color;
     protected float mass;
-    protected float frictionFactor;
+
     protected boolean isUpdated;
 
 

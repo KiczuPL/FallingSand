@@ -39,14 +39,14 @@ public class GameMap {
         for (int i = worldHeight / 2; i < worldHeight - 20; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
                 Vector2 v = new Vector2(j, i);
-                //setCellAtPosition(v, new Sand(v));
+                setCellAtPosition(v, new Water(v));
             }
         }
 
         for (int i = 5; i < worldHeight / 2 - 20; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
                 Vector2 v = new Vector2(j, i);
-                setCellAtPosition(v, new Water(v));
+                //setCellAtPosition(v, new Water(v));
             }
         }
 

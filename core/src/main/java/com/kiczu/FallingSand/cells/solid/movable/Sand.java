@@ -9,5 +9,7 @@ public class Sand extends MovableSolid {
         super(position);
         color = Color.YELLOW;
         mass = 1442f;
+        frictionFactor = 0.95f;
+        settleProbability = 0.7f;
     }
 }

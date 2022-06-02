@@ -24,7 +24,7 @@ public abstract class Fluid extends Cell {
         Vector2 desiredPosition = position.cpy().add(velocity);
         Vector2 neighbourBelow = position.cpy().sub(0, 1);
         if (matrix.getCellAtPosition(neighbourBelow).getMass() >= mass) {
-            desiredPosition = position.cpy().add( RandomGenerator.getRandomBoolean() ? -dispersionFactor : dispersionFactor,0);
+            desiredPosition = position.cpy().add( RandomGenerator.getBoolean() ? -dispersionFactor : dispersionFactor,0);
         }
 
         Vector2 lastValidPosition = position.cpy();
@@ -56,11 +56,13 @@ public abstract class Fluid extends Cell {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        collisionProcedured = collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
+                        //velocity.x = -Gravity.x;
+                        //velocity.y = -Gravity.y;
+                        velocity.x = 0;
+                        velocity.y = 0;
                         break;
                     }
                 } else {
-                    collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
                     break;
                 }
             }
@@ -74,15 +76,17 @@ public abstract class Fluid extends Cell {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        velocity.x = -Gravity.x;
-                        velocity.y = -Gravity.y;
+                        //velocity.x = -Gravity.x;
+                        //velocity.y = -Gravity.y;
+                        velocity.x = 0;
+                        velocity.y = 0;
                         break;
                     }
                 } else {
                     break;
                 }
             }
-        }//TODO: Trzeba dodać przekierowanie prędkości po zderzeniu (znormalizować dwa wektory, odjąć od siebie i wtedy wymnożyć?)
+        }
         if (!position.epsilonEquals(lastValidPosition) && !collisionProcedured)
             moveToPoint(matrix, lastValidPosition);
         Gravity.applyGravity(this);

@@ -1,8 +1,8 @@
 package com.kiczu.FallingSand.cells.solid.movable;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
+import com.kiczu.FallingSand.cells.EmptyCell;
 import com.kiczu.FallingSand.cells.fluid.Fluid;
 import com.kiczu.FallingSand.cells.solid.immovable.ImmovableSolid;
 import com.kiczu.FallingSand.containers.CellContainer;
@@ -11,6 +11,9 @@ import com.kiczu.FallingSand.utils.Gravity;
 import com.kiczu.FallingSand.utils.RandomGenerator;
 
 public class MovableSolid extends Cell {
+    protected float frictionFactor;
+    protected float settleProbability;
+    protected boolean isSettled;
 
     public MovableSolid(Vector2 position) {
         super(position);
@@ -21,9 +24,26 @@ public class MovableSolid extends Cell {
         if (isUpdated)
             return;
         isUpdated = true;
+        velocity.x *= 0.95f;
 
+        boolean shouldApplyGravityInThisIteration = true;
+
+        Cell neighbourBelow = matrix.getCellAtPosition(position.cpy().sub(0, 1));
+        if (velocity.y < 0 && neighbourBelow.getMass() >= mass) {
+
+                float factor = (RandomGenerator.getBoolean() ? 0.3f : -0.3f);
+                if (factor > 0)
+                    velocity.x -= 1;
+                else
+                    velocity.x += 1;
+                velocity.x += velocity.y * factor;
+                velocity.y = 0;
+                velocity.x *= frictionFactor;
+            shouldApplyGravityInThisIteration = false;
+        }
 
         Vector2 desiredPosition = position.cpy().add(velocity);
+
         Vector2 lastValidPosition = position.cpy();
         Vector2 currentPosition = position.cpy();
 
@@ -51,11 +71,10 @@ public class MovableSolid extends Cell {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        collisionProcedured = collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
+                        //collisionProcedured = collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
                         break;
                     }
                 } else {
-                    collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
                     break;
                 }
             }
@@ -69,17 +88,25 @@ public class MovableSolid extends Cell {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
+                        //collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
                         break;
                     }
                 } else {
                     break;
                 }
             }
-        }//TODO: Trzeba dodać przekierowanie prędkości po zderzeniu (znormalizować dwa wektory, odjąć od siebie i wtedy wymnożyć?)
+        }
         if (!position.epsilonEquals(lastValidPosition) && !collisionProcedured)
             moveToPoint(matrix, lastValidPosition);
-        Gravity.applyGravity(this);
+
+        //if (shouldApplyGravityInThisIteration)
+            Gravity.applyGravity(this);
+    }
+
+    private void settle() {
+        velocity.x = 0;
+        velocity.y = 0;
+        isSettled = true;
     }
 
     private boolean processCollision(Vector2 neighbourPosition, Vector2 lastValidPosition, GameMap matrix) {
@@ -118,35 +145,15 @@ public class MovableSolid extends Cell {
         //Vector2 deltaVector = lastValidPosition.cpy().sub(neighbourPosition);
         //boolean isCollisionDiagonal = deltaVector.x != 0 && deltaVector.y != 0;
         Vector2 gravity = Gravity.getVector();
-        gravity.setLength(velocity.len()*0.6f);
-        if(RandomGenerator.getRandomBoolean()){
+        gravity.setLength(velocity.len() * 0.6f);
+        if (RandomGenerator.getBoolean()) {
             gravity.rotateDeg(45f);
             velocity = gravity;
-        }else{
+        } else {
             gravity.rotateDeg(-45f);
             velocity = gravity;
         }
         //velocity.scl(.6f);
-
-
     }
-
-    public void exchangeMomentum(Cell neighbour) {
-        Vector2 neighbourVelocity = neighbour.getVelocity();
-        Vector2 tmp = neighbourVelocity;
-
-    }
-
-
-    private int getAdditionalCoordinate(float val) {
-        if (val < -.1f) {
-            return (int) Math.floor(val);
-        } else if (val > .1f) {
-            return (int) Math.ceil(val);
-        } else {
-            return 0;
-        }
-    }
-
 
 }
