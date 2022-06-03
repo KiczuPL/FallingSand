@@ -14,9 +14,11 @@ public class MovableSolid extends Cell {
     protected float frictionFactor;
     protected float settleProbability;
     protected boolean isSettled;
+    private boolean collidedLastFrame;
 
     public MovableSolid(Vector2 position) {
         super(position);
+        collidedLastFrame = false;
     }
 
     @Override
@@ -24,23 +26,69 @@ public class MovableSolid extends Cell {
         if (isUpdated)
             return;
         isUpdated = true;
-        velocity.x *= 0.95f;
 
-        boolean shouldApplyGravityInThisIteration = true;
 
         Cell neighbourBelow = matrix.getCellAtPosition(position.cpy().sub(0, 1));
-        if (velocity.y < 0 && neighbourBelow.getMass() >= mass) {
+        Cell neighbourBelowRight = matrix.getCellAtPosition(position.cpy().sub(-1, 1));
+        Cell neighbourBelowLeft = matrix.getCellAtPosition(position.cpy().sub(1, 1));
 
-                float factor = (RandomGenerator.getBoolean() ? 0.3f : -0.3f);
-                if (factor > 0)
-                    velocity.x -= 1;
-                else
-                    velocity.x += 1;
-                velocity.x += velocity.y * factor;
-                velocity.y = 0;
-                velocity.x *= frictionFactor;
-            shouldApplyGravityInThisIteration = false;
+        if (neighbourBelow.getMass() < mass) {
+            unSettle();
+        } else {
+            velocity.x *= frictionFactor;
         }
+
+        if (collidedLastFrame) {
+            if (neighbourBelow.getMass() < mass) {
+                velocity.x = 0;
+                velocity.y = -1;
+                unSettle();
+            } else if (neighbourBelowRight.getMass() < mass || neighbourBelowLeft.getMass() < mass) {
+                if (neighbourBelowRight.getMass() < mass && neighbourBelowLeft.getMass() < mass) {
+                    if (RandomGenerator.getBoolean()) {
+                        velocity.x = -1;
+                        velocity.y = -1;
+                    } else {
+                        velocity.x = 1;
+                        velocity.y = -1;
+                    }
+                } else if (neighbourBelowRight.getMass() < mass) {
+                    velocity.x = 1;
+                    velocity.y = -1;
+                } else {
+                    velocity.x = -1;
+                    velocity.y = -1;
+                }
+                unSettle();
+            } else {
+                if (RandomGenerator.getBoolean(settleProbability)) {
+                    settle();
+                } else {
+                    float factor = (RandomGenerator.getBoolean() ? 0.1f : -0.1f);
+                    velocity.x += velocity.y * factor;
+                }
+            }
+            collidedLastFrame = false;
+
+
+
+
+
+
+            /*if (neighbourBelow.getMass() >= mass) {
+                float factor = (RandomGenerator.getBoolean() ? 0.9f : -0.9f);
+                velocity.x *= frictionFactor;
+                velocity.x += velocity.y * factor;
+
+            } else {
+                isSettled = false;
+            }*/
+
+        }
+
+        if (isSettled)
+            return;
+
 
         Vector2 desiredPosition = position.cpy().add(velocity);
 
@@ -50,12 +98,8 @@ public class MovableSolid extends Cell {
         int posX = (int) currentPosition.x;
         int posY = (int) currentPosition.y;
 
-        int targetX = (int) desiredPosition.x;
-        int targetY = (int) desiredPosition.y;
         int deltaX = (int) (desiredPosition.x - position.x);
         int deltaY = (int) (desiredPosition.y - position.y);
-
-        boolean collisionProcedured = false;
 
 
         boolean isDeltaXBigger = Math.abs(deltaX) >= Math.abs(deltaY);
@@ -63,50 +107,61 @@ public class MovableSolid extends Cell {
         int signY = deltaY < 0 ? -1 : 1;
         if (isDeltaXBigger) {
             float slope = (float) deltaY / (float) deltaX;
-            for (int i = signX; Math.abs(i) < Math.abs(deltaX); i += signX) {
-                int value = (int) (slope * i);
+            for (int i = signX; Math.abs(i) <= Math.abs(deltaX); i += signX) {
+                int value = Math.round((slope * i));
                 currentPosition.x = posX + i;
                 currentPosition.y = posY + value;
                 if (matrix.isPointInBounds(currentPosition)) {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        //collisionProcedured = collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
+                        collision();
                         break;
                     }
                 } else {
+                    //collision();
                     break;
                 }
             }
         } else {
             float slope = (float) deltaX / (float) deltaY;
-            for (int i = signY; Math.abs(i) < Math.abs(deltaY); i += signY) {
-                int value = (int) (slope * i);
+            for (int i = signY; Math.abs(i) <= Math.abs(deltaY); i += signY) {
+                int value = Math.round((slope * i));
                 currentPosition.x = posX + value;
                 currentPosition.y = posY + i;
                 if (matrix.isPointInBounds(currentPosition)) {
                     if (isPositionEmpty(matrix, currentPosition)) {
                         lastValidPosition = currentPosition.cpy();
                     } else {
-                        //collisionProcedured = processCollision(currentPosition, lastValidPosition, matrix);
+                        collision();
                         break;
                     }
                 } else {
+                    //collision();
                     break;
                 }
             }
         }
-        if (!position.epsilonEquals(lastValidPosition) && !collisionProcedured)
+        if (!position.epsilonEquals(lastValidPosition))
             moveToPoint(matrix, lastValidPosition);
 
-        //if (shouldApplyGravityInThisIteration)
-            Gravity.applyGravity(this);
+        Gravity.applyGravity(this);
     }
 
     private void settle() {
         velocity.x = 0;
         velocity.y = 0;
         isSettled = true;
+    }
+
+    private void unSettle() {
+        isSettled = false;
+    }
+
+    private void collision() {
+        collidedLastFrame = true;
+        //velocity.x = 0;
+        //velocity.y = 0;
     }
 
     private boolean processCollision(Vector2 neighbourPosition, Vector2 lastValidPosition, GameMap matrix) {
