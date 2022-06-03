@@ -14,78 +14,85 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kiczu.FallingSand.containers.GameMap;
+import com.kiczu.FallingSand.input.InputManager;
 import com.kiczu.FallingSand.ui.MapActor;
 
 
 public class FallingSand extends ApplicationAdapter {
 
-	private final int chunkSize = 10;
-	private final int horizontalChunks = 32;
-	private final int verticalChunks = 18;
+    private final int chunkSize = 10;
+    private final int horizontalChunks = 32;
+    private final int verticalChunks = 18;
 
 
-	public final float mapWidth = horizontalChunks * chunkSize;
-	public final float mapHeight = verticalChunks * chunkSize;
+    public final float mapWidth = horizontalChunks * chunkSize;
+    public final float mapHeight = verticalChunks * chunkSize;
 
-	FPSLogger fpsLogger;
+    FPSLogger fpsLogger;
 
-	private ShapeRenderer shapeRenderer;
-	public GameMap matrix;
-	private OrthographicCamera camera;
-	private Stage matrixStage;
-	private Actor mapActor;
+    private ShapeRenderer shapeRenderer;
+    public GameMap matrix;
+    private OrthographicCamera camera;
+    private Stage matrixStage;
+    private Actor mapActor;
 
-	private Viewport viewport;
+    private Viewport viewport;
 
-	@Override
-	public void create() {
-		super.create();
+    private InputManager inputManager;
 
-		camera = new OrthographicCamera();
+    @Override
+    public void create() {
+        super.create();
 
-		fpsLogger = new FPSLogger();
+        camera = new OrthographicCamera();
 
-		matrix = new GameMap(chunkSize, horizontalChunks, verticalChunks);
+        fpsLogger = new FPSLogger();
 
-
-		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		shapeRenderer.setAutoShapeType(true);
+        matrix = new GameMap(chunkSize, horizontalChunks, verticalChunks);
 
 
-		float aspectRatio = (float) Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth();
-		viewport = new FitViewport(mapWidth, mapHeight, camera);
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setAutoShapeType(true);
 
 
-		matrixStage = new Stage(viewport);
-		matrixStage.addActor(new MapActor(matrix, shapeRenderer));
+        float aspectRatio = (float) Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth();
+        viewport = new FitViewport(mapWidth, mapHeight, camera);
 
 
-		camera.position.set(mapWidth / 2, mapHeight / 2, 0);
+        matrixStage = new Stage(viewport);
+        matrixStage.addActor(new MapActor(matrix, shapeRenderer));
 
 
-		matrixStage = new Stage(viewport);
-		mapActor = new MapActor(matrix, shapeRenderer);
-		matrixStage.addActor(mapActor);
-	}
+        camera.position.set(mapWidth / 2, mapHeight / 2, 0);
 
-	@Override
-	public void render() {
-		//Gdx.gl.glClearColor(0f, 1, 1, 1f);
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		ScreenUtils.clear(0, 0, 0, 1);
 
-		fpsLogger.log();
-		matrix.updateAll();
-		matrixStage.draw();
-	}
+        matrixStage = new Stage(viewport);
+        mapActor = new MapActor(matrix, shapeRenderer);
+        matrixStage.addActor(mapActor);
 
-	public void resize(int width, int height) {
-		viewport.update(width, height);
-	}
 
-	@Override
-	public void dispose() {
+        inputManager = new InputManager(matrix, camera, viewport,shapeRenderer);
+    }
 
-	}
+    @Override
+    public void render() {
+        //Gdx.gl.glClearColor(0f, 1, 1, 1f);
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(0, 0, 0, 1);
+
+        fpsLogger.log();
+        matrix.updateAll();
+        matrixStage.draw();
+        inputManager.drawBrush();
+    }
+
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+    }
+
+    @Override
+    public void dispose() {
+
+    }
 }

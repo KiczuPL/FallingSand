@@ -3,7 +3,8 @@ package com.kiczu.FallingSand.containers;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
-import com.kiczu.FallingSand.cells.fluid.Water;
+import com.kiczu.FallingSand.cells.CellType;
+import com.kiczu.FallingSand.cells.EmptyCell;
 import com.kiczu.FallingSand.cells.solid.immovable.Wall;
 import com.kiczu.FallingSand.cells.solid.immovable.Wood;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
@@ -44,13 +45,13 @@ public class GameMap {
         }
 
         for (int i = 5; i < worldHeight / 2 - 20; i++) {
-            for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
+            for (int j = worldWidth / 2; j < worldWidth - worldHeight / 4; j++) {
                 Vector2 v = new Vector2(j, i);
                 //setCellAtPosition(v, new Water(v));
             }
         }
 
-        for (int i = 0; i < worldHeight - 100; i++) {
+        for (int i = 0; i < worldHeight - worldHeight/3; i++) {
             Vector2 v = new Vector2(worldWidth / 3, i);
             setCellAtPosition(v, new Wood(v));
 
@@ -116,6 +117,13 @@ public class GameMap {
         return true;
     }
 
+    public void spawnCellAtPosition(Vector2 position, CellType cellType){
+        if(isPointInBounds(position) && getCellAtPosition(position)instanceof EmptyCell){
+            setCellAtPosition(position,cellType.create(position));
+        }
+    }
+
+
     public void setCellAtPosition(Vector2 position, Cell cell) {
         getCellContainer(position).setPhysicalCell(cell);
     }
@@ -143,21 +151,13 @@ public class GameMap {
 
             shapeRenderer.rect(position.x, position.y, 10, 10);
 
-            //container.draw(shapeRenderer);
         }
         shapeRenderer.end();
     }
 
     public void updateAll() {
         Collections.shuffle(indexes, RandomGenerator.getInstance());
-/*
-        for (CellContainer c : containers) {
-            c.update(this);
-        }
-        for (CellContainer c : containers) {
-            c.isUpdated(false);
-        }
-*/
+
         for (Integer i : indexes) {
             containers.get(i).update(this);
         }
