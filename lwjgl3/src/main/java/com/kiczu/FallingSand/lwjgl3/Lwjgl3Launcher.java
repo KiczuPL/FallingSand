@@ -24,7 +24,7 @@ public class Lwjgl3Launcher {
 		//configuration.setForegroundFPS(60);
 
 		configuration.useVsync(false);; // Setting to false disables vertical sync
-		configuration.setForegroundFPS(0); // Setting to 0 disables foreground fps throttling
+		configuration.setForegroundFPS(60); // Setting to 0 disables foreground fps throttling
 
 
 		//// If you remove the above line and set Vsync to false, you can get unlimited FPS, which can be

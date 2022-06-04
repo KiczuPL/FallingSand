@@ -21,19 +21,24 @@ public abstract class Gas extends Cell {
             return;
         isUpdated = true;
 
-        ageIfPossible(matrix);
 
-        velocity.y *= 0.6f;
-        velocity.x *= 0.75f;
-        Vector2 desiredPosition = position.cpy().add(velocity);
+        if (isRemoved) {
+            return;
+        }
 
-        float rand1 = RandomGenerator.getIntFromRange(-1, 3);
-        float rand2 = RandomGenerator.getIntFromRange(-2, 5);
+
+        float rand1 = RandomGenerator.getFromRange(-1, 3);
+        float rand2 = RandomGenerator.getFromRange(-2, 5);
         velocity.x += rand1;
         velocity.y += rand2;
 
         collidedLastFrame = false;
         //}
+
+
+        velocity.y *= 0.6f;
+        velocity.x *= 0.6f;
+        Vector2 desiredPosition = position.cpy().add(velocity);
 
         Vector2 lastValidPosition = position.cpy();
         Vector2 currentPosition = position.cpy();
@@ -73,7 +78,6 @@ public abstract class Gas extends Cell {
             if (matrix.isPointInBounds(currentPosition)) {
                 if (canMoveToPosition(matrix, currentPosition)) {
                     lastValidPosition = currentPosition.cpy();
-                    reactToNeighbours(matrix);
                 } else {
                     velocity.x = 0;
                     velocity.y = 0;
@@ -91,26 +95,9 @@ public abstract class Gas extends Cell {
             movedInLastFrame = false;
         }
 
-
+        ageIfPossible(matrix);
         velocity.x -= Gravity.x;
         velocity.y -= Gravity.y;
     }
 
-    private void reactToNeighbours(GameMap matrix) {
-        List<Cell> neighbours = matrix.getAllNeighbours(position);
-        for (Cell neighbour : neighbours)
-            processNeighbour(matrix, neighbour);
-    }
-
-    private void processNeighbour(GameMap matrix, Cell neighbour) {
-        if (neighbour instanceof MovableSolid) {
-            MovableSolid n = ((MovableSolid) neighbour);
-            if (movedInLastFrame)
-                if (RandomGenerator.getBoolean(1f - n.getSettleProbability())) {
-                    n.unSettle();
-                }
-        }
-    }
-
-    public abstract void die(GameMap matrix);
 }

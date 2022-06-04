@@ -12,6 +12,9 @@ public abstract class ImmovableSolid extends Cell {
 
     @Override
     public void update(GameMap matrix, CellContainer parentContainer) {
-
+        if (isRemoved) {
+            return;
+        }
+        updateDependingOnSpecialFeatures(matrix);
     }
 }

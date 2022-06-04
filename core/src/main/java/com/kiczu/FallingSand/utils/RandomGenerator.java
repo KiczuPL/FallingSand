@@ -14,8 +14,12 @@ public abstract class RandomGenerator {
         return getInstance().nextFloat() <= probability;
     }
 
-    public static float getIntFromRange(float start, float range){
+    public static float getFromRange(float start, float range){
         return r.nextInt((int)range) + start;
+    }
+
+    public static int getIntFromRange(int start, int range){
+        return r.nextInt(range) + start;
     }
 
     public static Random getInstance() {

@@ -4,22 +4,26 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.EmptyCell;
 import com.kiczu.FallingSand.cells.interfaces.Aging;
+import com.kiczu.FallingSand.cells.interfaces.Destructible;
 import com.kiczu.FallingSand.containers.GameMap;
+import com.kiczu.FallingSand.utils.RandomGenerator;
 
-public class Fire extends Gas implements Aging {
+public class Fire extends Gas implements Aging, Destructible {
 
 
     public Fire(Vector2 position) {
         super(position);
-        mass = 0f;
+        mass = 1f;
         color = Color.YELLOW;
-        lifeSpan = 40;
+        lifeSpan = RandomGenerator.getIntFromRange(20, 30);
+        isBurning = true;
     }
 
 
     @Override
     public void die(GameMap matrix) {
-        matrix.setCellAtPosition(position, EmptyCell.getInstance());
+        matrix.setCellAtPosition(this.position, EmptyCell.getInstance());
+        isRemoved = true;
     }
 
     @Override

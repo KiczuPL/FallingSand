@@ -121,7 +121,7 @@ public class GameMap {
     }
 
     public List<Cell> getAllNeighbours(Vector2 position) {
-        List<Cell> result = new ArrayList<>(9);
+        List<Cell> result = new ArrayList<>();
         Cell n;
 
         n = getNeighbour(position, -1f, -1f);

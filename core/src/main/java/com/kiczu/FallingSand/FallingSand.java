@@ -72,7 +72,7 @@ public class FallingSand extends ApplicationAdapter {
         matrixStage.addActor(mapActor);
 
 
-        inputManager = new InputManager(matrix, camera, viewport,shapeRenderer);
+        inputManager = new InputManager(matrix, camera, viewport, shapeRenderer);
     }
 
     @Override
@@ -85,6 +85,7 @@ public class FallingSand extends ApplicationAdapter {
         matrix.updateAll();
         matrixStage.draw();
         inputManager.drawBrush();
+
     }
 
     public void resize(int width, int height) {
