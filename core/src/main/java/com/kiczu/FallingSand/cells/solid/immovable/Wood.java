@@ -30,12 +30,10 @@ public class Wood extends ImmovableSolid implements Flammable, Destructible {
         List<Cell> neighbours = matrix.getAllNeighbours(this.position);
         if (isBurning) {
             for (Cell neighbour : neighbours) {
-                if (neighbour instanceof EmptyCell) {
+                if (neighbour instanceof EmptyCell || neighbour instanceof Fire) {
 
-                    Cell f = new Fire(neighbour.getPosition().cpy());
-                    f.setColor(Color.PINK);
-                    matrix.setCellAtPosition(neighbour.getPosition().cpy(), f);
-                    //neighbour.isRemoved(true);
+                    matrix.setCellAtPosition(neighbour.getPosition(), new Fire(neighbour.getPosition()));
+                    neighbour.isRemoved(true);
 
                     hitPoints -= 1;
                 }
@@ -59,7 +57,7 @@ public class Wood extends ImmovableSolid implements Flammable, Destructible {
 
     @Override
     public void die(GameMap matrix) {
-        matrix.setCellAtPosition(position, EmptyCell.getInstance());
+        matrix.setCellAtPosition(position, new EmptyCell(position));
         isRemoved = true;
     }
 }

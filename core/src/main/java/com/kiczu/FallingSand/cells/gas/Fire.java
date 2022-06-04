@@ -22,7 +22,7 @@ public class Fire extends Gas implements Aging, Destructible {
 
     @Override
     public void die(GameMap matrix) {
-        matrix.setCellAtPosition(this.position, EmptyCell.getInstance());
+        matrix.setCellAtPosition(this.position, new EmptyCell(position));
         isRemoved = true;
     }
 

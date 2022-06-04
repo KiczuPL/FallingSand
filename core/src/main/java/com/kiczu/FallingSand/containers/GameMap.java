@@ -167,7 +167,7 @@ public class GameMap {
 
     public void eraseCellAtPosition(Vector2 position) {
         if (isPointInBounds(position)) {
-            setCellAtPosition(position, EmptyCell.getInstance());
+            setCellAtPosition(position, new EmptyCell(position));
         }
     }
 

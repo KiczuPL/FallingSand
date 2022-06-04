@@ -8,17 +8,10 @@ import com.kiczu.FallingSand.containers.GameMap;
 public class EmptyCell extends Cell {
     private static Cell emptyCell;
 
-    private EmptyCell() {
-        super(new Vector2(-1f, -1f));
+    public EmptyCell(Vector2 position) {
+        super(position);
         color = Color.BLACK;
         mass = -Float.MAX_VALUE;
-    }
-
-    public static Cell getInstance() {
-        if (emptyCell == null) {
-            emptyCell = new EmptyCell();
-        }
-        return emptyCell;
     }
 
     @Override

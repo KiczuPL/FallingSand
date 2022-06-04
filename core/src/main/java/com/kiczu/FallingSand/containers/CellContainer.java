@@ -14,7 +14,7 @@ public class CellContainer {
 
     public CellContainer(Vector2 position) {
         this.position = position;
-        physicalCell = EmptyCell.getInstance();
+        physicalCell = new EmptyCell(position);
     }
 
     public Cell getPhysicalCell() {
