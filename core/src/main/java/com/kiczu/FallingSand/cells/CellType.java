@@ -2,6 +2,7 @@ package com.kiczu.FallingSand.cells;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.fluid.Water;
+import com.kiczu.FallingSand.cells.solid.immovable.Wood;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
 
 public enum CellType {
@@ -15,6 +16,12 @@ public enum CellType {
         @Override
         public Cell create(Vector2 position) {
             return new Water(position);
+        }
+    },
+    WOOD {
+        @Override
+        public Cell create(Vector2 position) {
+            return new Wood(position);
         }
     };
 

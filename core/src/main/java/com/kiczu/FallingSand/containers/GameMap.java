@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
 import com.kiczu.FallingSand.cells.CellType;
 import com.kiczu.FallingSand.cells.EmptyCell;
+import com.kiczu.FallingSand.cells.fluid.Water;
 import com.kiczu.FallingSand.cells.solid.immovable.Wall;
 import com.kiczu.FallingSand.cells.solid.immovable.Wood;
 import com.kiczu.FallingSand.cells.solid.movable.Sand;
@@ -40,7 +41,7 @@ public class GameMap {
         for (int i = worldHeight / 2; i < worldHeight - 20; i++) {
             for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
                 Vector2 v = new Vector2(j, i);
-                setCellAtPosition(v, new Sand(v));
+                //setCellAtPosition(v, new Sand(v));
             }
         }
 
@@ -50,12 +51,14 @@ public class GameMap {
                 //setCellAtPosition(v, new Water(v));
             }
         }
-
-        for (int i = 0; i < worldHeight - worldHeight / 3; i++) {
-            Vector2 v = new Vector2(worldWidth / 3, i);
+        for (int i = 0; i < worldWidth - worldWidth / 3; i++) {
+            Vector2 v = new Vector2(i, worldHeight / 2);
             setCellAtPosition(v, new Wood(v));
 
         }
+        Vector2 v = new Vector2(worldWidth / 4, worldHeight / 5 * 4);
+        setCellAtPosition(v, new Water(v));
+
 
         setUpWalls();
         indexes = new ArrayList<>(size);

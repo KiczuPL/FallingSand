@@ -2,6 +2,7 @@ package com.kiczu.FallingSand.cells;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.kiczu.FallingSand.cells.solid.immovable.ImmovableSolid;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
 
@@ -15,6 +16,7 @@ public abstract class Cell {
 
     protected boolean isUpdated;
     protected boolean collidedLastFrame;
+    protected boolean movedInLastFrame;
 
 
     public Cell(Vector2 position) {
@@ -51,6 +53,8 @@ public abstract class Cell {
 
     protected boolean canMoveToPosition(GameMap matrix, Vector2 destination) {
         if (!matrix.isPointInBounds(destination))
+            return false;
+        if (matrix.getCellAtPosition(destination) instanceof ImmovableSolid)
             return false;
         return matrix.getCellAtPosition(destination).mass < mass;
     }

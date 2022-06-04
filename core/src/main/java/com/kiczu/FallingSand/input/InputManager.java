@@ -20,6 +20,7 @@ public class InputManager {
 
     private Brush brush;
     private CellType selectedCellType;
+    private int sel = 0;
 
     private int brushSize;
 
@@ -68,15 +69,25 @@ public class InputManager {
     }
 
     public void switchType() {
-        if (selectedCellType == CellType.WATER) {
-            selectedCellType = CellType.SAND;
-        } else
-            selectedCellType = CellType.WATER;
+        CellType[] t = new CellType[3];
+        t[0] = CellType.SAND;
+        t[1] = CellType.WATER;
+        t[2] = CellType.WOOD;
+        if (sel + 1 < 3) {
+            sel++;
+        } else {
+            sel = 0;
+        }
+        selectedCellType = t[sel];
     }
 
     public void changeBrushSize(float c) {
         if (brushSize - c > 0) {
-            brushSize -= c;
+            if (c < 0) {
+                brushSize++;
+            } else {
+                brushSize--;
+            }
         }
     }
 

@@ -14,6 +14,10 @@ public abstract class RandomGenerator {
         return getInstance().nextFloat() <= probability;
     }
 
+    public static float getIntFromRange(float start, float range){
+        return r.nextInt((int)range) + start;
+    }
+
     public static Random getInstance() {
         if (r == null) {
             r = new Random(2137);

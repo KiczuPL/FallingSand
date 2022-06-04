@@ -15,7 +15,7 @@ public class MovableSolid extends Cell {
     protected float frictionFactor;
     protected float settleProbability;
     protected boolean isSettled;
-    protected boolean movedInLastFrame;
+
 
 
     public MovableSolid(Vector2 position) {
@@ -116,7 +116,6 @@ public class MovableSolid extends Cell {
                     reactToNeighbours(matrix);
                 } else {
                     collision();
-
                     break;
                 }
             } else {
@@ -137,14 +136,18 @@ public class MovableSolid extends Cell {
         Gravity.applyGravity(this);
     }
 
-    private void settle() {
+    public void settle() {
         velocity.x = 0;
         velocity.y = 0;
         isSettled = true;
     }
 
-    private void unSettle() {
+    public void unSettle() {
         isSettled = false;
+    }
+
+    public float getSettleProbability(){
+        return settleProbability;
     }
 
     private void collision() {
@@ -161,9 +164,10 @@ public class MovableSolid extends Cell {
 
     private void processNeighbour(GameMap matrix, Cell neighbour) {
         if (neighbour instanceof MovableSolid) {
+            MovableSolid n = ((MovableSolid) neighbour);
             if(movedInLastFrame)
-            if (RandomGenerator.getBoolean(1f - settleProbability)) {
-                ((MovableSolid) neighbour).unSettle();
+            if (RandomGenerator.getBoolean(1f - n.settleProbability)) {
+                n.unSettle();
             }
         }
     }
