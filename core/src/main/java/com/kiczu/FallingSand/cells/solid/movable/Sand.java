@@ -7,7 +7,7 @@ public class Sand extends MovableSolid {
 
     public Sand(Vector2 position) {
         super(position);
-        color = Color.YELLOW;
+        color = Color.GOLD;
         mass = 1442f;
         frictionFactor = 0.25f;
         settleProbability = 0.1f;

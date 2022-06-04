@@ -69,11 +69,12 @@ public class InputManager {
     }
 
     public void switchType() {
-        CellType[] t = new CellType[3];
+        CellType[] t = new CellType[4];
         t[0] = CellType.SAND;
         t[1] = CellType.WATER;
         t[2] = CellType.WOOD;
-        if (sel + 1 < 3) {
+        t[3] = CellType.FIRE;
+        if (sel + 1 < t.length) {
             sel++;
         } else {
             sel = 0;

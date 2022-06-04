@@ -2,6 +2,7 @@ package com.kiczu.FallingSand.cells;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.kiczu.FallingSand.cells.interfaces.Aging;
 import com.kiczu.FallingSand.cells.solid.immovable.ImmovableSolid;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
@@ -13,6 +14,12 @@ public abstract class Cell {
     protected Vector2 velocity;
     protected Color color;
     protected float mass;
+
+    protected float heatCapacity;
+    protected float heatConductivity;
+    protected int lifeSpan;
+
+    public int hitPoints;
 
     protected boolean isUpdated;
     protected boolean collidedLastFrame;
@@ -61,6 +68,16 @@ public abstract class Cell {
 
     protected void moveToPoint(GameMap matrix, Vector2 destinationVector2) {
         matrix.swapCellsAtPosition(this.position, destinationVector2);
+    }
+
+    public void updateDependingOnSpecialFeatures(GameMap matrix){
+
+    }
+
+    public void ageIfPossible(GameMap matrix) {
+        if (this instanceof Aging) {
+            ((Aging) this).age(matrix);
+        }
     }
 
 }

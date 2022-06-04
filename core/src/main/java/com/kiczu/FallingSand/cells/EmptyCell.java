@@ -9,8 +9,9 @@ public class EmptyCell extends Cell {
     private static Cell emptyCell;
 
     private EmptyCell() {
-        super(new Vector2(-1f,-1f));
+        super(new Vector2(-1f, -1f));
         color = Color.BLACK;
+        mass = -Float.MAX_VALUE;
     }
 
     public static Cell getInstance() {
@@ -21,7 +22,7 @@ public class EmptyCell extends Cell {
     }
 
     @Override
-    public void update(GameMap matrix, CellContainer parentContainer){
+    public void update(GameMap matrix, CellContainer parentContainer) {
 
     }
 

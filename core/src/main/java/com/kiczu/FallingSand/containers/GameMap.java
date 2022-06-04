@@ -156,8 +156,7 @@ public class GameMap {
         Vector2 pos = position.cpy().add(dx, dy);
         if (!isPointInBounds(pos))
             return null;
-        Cell n = getCellAtPosition(pos);
-        return n instanceof EmptyCell ? null : n;
+        return getCellAtPosition(pos);
     }
 
     public void spawnCellAtPosition(Vector2 position, CellType cellType) {

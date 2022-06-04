@@ -20,7 +20,7 @@ import com.kiczu.FallingSand.ui.MapActor;
 
 public class FallingSand extends ApplicationAdapter {
 
-    private final int chunkSize = 30;
+    private final int chunkSize = 20;
     private final int horizontalChunks = 16;
     private final int verticalChunks = 9;
 
