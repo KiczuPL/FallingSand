@@ -17,7 +17,6 @@ public class Brush {
         Vector2 position = inputManager.getBrushPosition();
         position.x = (float) Math.floor(position.x);
         position.y = (float) Math.floor(position.y);
-        System.out.println(position);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.LIGHT_GRAY);
         shapeRenderer.rect(position.x - size, position.y - size, 2 * size, 2 * size);

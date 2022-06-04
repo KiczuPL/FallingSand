@@ -14,6 +14,7 @@ public abstract class Cell {
     protected float mass;
 
     protected boolean isUpdated;
+    protected boolean collidedLastFrame;
 
 
     public Cell(Vector2 position) {
@@ -48,16 +49,10 @@ public abstract class Cell {
 
     public abstract void update(GameMap matrix, CellContainer parentContainer);
 
-    protected boolean isPositionEmpty(GameMap matrix, Vector2 destination){
-        return matrix.getCellAtPosition(destination) instanceof EmptyCell;
-    }
-
-    protected boolean canMoveToPoint(GameMap matrix, CellContainer parentContainer, Vector2 destination) {
+    protected boolean canMoveToPosition(GameMap matrix, Vector2 destination) {
         if (!matrix.isPointInBounds(destination))
             return false;
-        CellContainer container = matrix.getCellContainer(destination);
-
-        return container.canCellMoveHere(this);
+        return matrix.getCellAtPosition(destination).mass < mass;
     }
 
     protected void moveToPoint(GameMap matrix, Vector2 destinationVector2) {

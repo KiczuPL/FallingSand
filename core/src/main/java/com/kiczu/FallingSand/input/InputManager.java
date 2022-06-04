@@ -31,7 +31,7 @@ public class InputManager {
         this.viewport = viewport;
         brushSize = 6;
         brush = new Brush(this);
-        selectedCellType = CellType.WATER;
+        selectedCellType = CellType.SAND;
 
         inputStage = new Stage(viewport);
         inputStage.addActor(new BrushActor(brush, shapeRenderer));
@@ -53,6 +53,31 @@ public class InputManager {
                 pos.y = brush.y + j;
                 matrix.spawnCellAtPosition(pos, selectedCellType);
             }
+    }
+
+    public void eraseWithBrush() {
+        int brushSize2 = 2 * brushSize;
+        Vector2 brush = getBrushPosition().sub(brushSize, brushSize);
+        Vector2 pos = new Vector2();
+        for (int i = 0; i < brushSize2; i++)
+            for (int j = 0; j < brushSize2; j++) {
+                pos.x = brush.x + i;
+                pos.y = brush.y + j;
+                matrix.eraseCellAtPosition(pos);
+            }
+    }
+
+    public void switchType() {
+        if (selectedCellType == CellType.WATER) {
+            selectedCellType = CellType.SAND;
+        } else
+            selectedCellType = CellType.WATER;
+    }
+
+    public void changeBrushSize(float c) {
+        if (brushSize - c > 0) {
+            brushSize -= c;
+        }
     }
 
     public Vector2 getBrushPosition() {

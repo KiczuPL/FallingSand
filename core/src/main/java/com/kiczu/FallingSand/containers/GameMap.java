@@ -51,7 +51,7 @@ public class GameMap {
             }
         }
 
-        for (int i = 0; i < worldHeight - worldHeight/3; i++) {
+        for (int i = 0; i < worldHeight - worldHeight / 3; i++) {
             Vector2 v = new Vector2(worldWidth / 3, i);
             setCellAtPosition(v, new Wood(v));
 
@@ -76,7 +76,7 @@ public class GameMap {
 
         for (int i = 0; i < worldWidth; i++) {
             v.x = i;
-            v.y = worldHeight-1;
+            v.y = worldHeight - 1;
             setCellAtPosition(v, new Wall(v));
         }
 
@@ -88,7 +88,7 @@ public class GameMap {
         }
 
         for (int i = 0; i < worldHeight; i++) {
-            v.x = worldWidth-1;
+            v.x = worldWidth - 1;
             v.y = i;
             setCellAtPosition(v, new Wall(v));
         }
@@ -117,9 +117,55 @@ public class GameMap {
         return true;
     }
 
-    public void spawnCellAtPosition(Vector2 position, CellType cellType){
-        if(isPointInBounds(position) && getCellAtPosition(position)instanceof EmptyCell){
-            setCellAtPosition(position,cellType.create(position));
+    public List<Cell> getAllNeighbours(Vector2 position) {
+        List<Cell> result = new ArrayList<>(9);
+        Cell n;
+
+        n = getNeighbour(position, -1f, -1f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, -1f, 0f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, -1f, 1f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, 0f, -1f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, 0f, 1f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, 1f, -1f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, 1f, 0f);
+        if (n != null)
+            result.add(n);
+        n = getNeighbour(position, 1f, 1f);
+        if (n != null)
+            result.add(n);
+
+        return result;
+    }
+
+    public Cell getNeighbour(Vector2 position, float dx, float dy) {
+        Vector2 pos = position.cpy().add(dx, dy);
+        if (!isPointInBounds(pos))
+            return null;
+        Cell n = getCellAtPosition(pos);
+        return n instanceof EmptyCell ? null : n;
+    }
+
+    public void spawnCellAtPosition(Vector2 position, CellType cellType) {
+        if (isPointInBounds(position) && getCellAtPosition(position) instanceof EmptyCell) {
+            setCellAtPosition(position, cellType.create(position));
+        }
+    }
+
+    public void eraseCellAtPosition(Vector2 position) {
+        if (isPointInBounds(position)) {
+            setCellAtPosition(position, EmptyCell.getInstance());
         }
     }
 

@@ -2,7 +2,6 @@ package com.kiczu.FallingSand.cells.solid.movable;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
-import com.kiczu.FallingSand.cells.EmptyCell;
 import com.kiczu.FallingSand.cells.fluid.Fluid;
 import com.kiczu.FallingSand.cells.solid.immovable.ImmovableSolid;
 import com.kiczu.FallingSand.containers.CellContainer;
@@ -10,11 +9,14 @@ import com.kiczu.FallingSand.containers.GameMap;
 import com.kiczu.FallingSand.utils.Gravity;
 import com.kiczu.FallingSand.utils.RandomGenerator;
 
+import java.util.List;
+
 public class MovableSolid extends Cell {
     protected float frictionFactor;
     protected float settleProbability;
     protected boolean isSettled;
-    private boolean collidedLastFrame;
+    protected boolean movedInLastFrame;
+
 
     public MovableSolid(Vector2 position) {
         super(position);
@@ -43,6 +45,8 @@ public class MovableSolid extends Cell {
                 velocity.x = 0;
                 velocity.y = -1;
                 unSettle();
+            } else if (RandomGenerator.getBoolean(settleProbability)) {
+                settle();
             } else if (neighbourBelowRight.getMass() < mass || neighbourBelowLeft.getMass() < mass) {
                 if (neighbourBelowRight.getMass() < mass && neighbourBelowLeft.getMass() < mass) {
                     if (RandomGenerator.getBoolean()) {
@@ -61,37 +65,16 @@ public class MovableSolid extends Cell {
                 }
                 unSettle();
             } else {
-                if (RandomGenerator.getBoolean(settleProbability)) {
-                    settle();
-                } else {
-                    float factor = (RandomGenerator.getBoolean() ? 0.1f : -0.1f);
-                    velocity.x += velocity.y * factor;
-                }
+                float factor = (RandomGenerator.getBoolean() ? 0.1f : -0.1f);
+                velocity.x += velocity.y * factor;
             }
             collidedLastFrame = false;
 
-
-
-
-
-
-            /*if (neighbourBelow.getMass() >= mass) {
-                float factor = (RandomGenerator.getBoolean() ? 0.9f : -0.9f);
-                velocity.x *= frictionFactor;
-                velocity.x += velocity.y * factor;
-
-            } else {
-                isSettled = false;
-            }*/
-
         }
-
         if (isSettled)
             return;
 
-
         Vector2 desiredPosition = position.cpy().add(velocity);
-
         Vector2 lastValidPosition = position.cpy();
         Vector2 currentPosition = position.cpy();
 
@@ -101,49 +84,55 @@ public class MovableSolid extends Cell {
         int deltaX = (int) (desiredPosition.x - position.x);
         int deltaY = (int) (desiredPosition.y - position.y);
 
-
         boolean isDeltaXBigger = Math.abs(deltaX) >= Math.abs(deltaY);
-        int signX = deltaX < 0 ? -1 : 1;
-        int signY = deltaY < 0 ? -1 : 1;
+
+        int sign;
+        float slope;
+        int delta;
+
         if (isDeltaXBigger) {
-            float slope = (float) deltaY / (float) deltaX;
-            for (int i = signX; Math.abs(i) <= Math.abs(deltaX); i += signX) {
-                int value = Math.round((slope * i));
+            slope = (float) deltaY / (float) deltaX;
+            sign = deltaX < 0 ? -1 : 1;
+            delta = deltaX;
+        } else {
+            slope = (float) deltaX / (float) deltaY;
+            sign = deltaY < 0 ? -1 : 1;
+            delta = deltaY;
+        }
+
+        for (int i = sign; Math.abs(i) <= Math.abs(delta); i += sign) {
+            int value = Math.round((slope * i));
+
+            if (isDeltaXBigger) {
                 currentPosition.x = posX + i;
                 currentPosition.y = posY + value;
-                if (matrix.isPointInBounds(currentPosition)) {
-                    if (isPositionEmpty(matrix, currentPosition)) {
-                        lastValidPosition = currentPosition.cpy();
-                    } else {
-                        collision();
-                        break;
-                    }
-                } else {
-                    //collision();
-                    break;
-                }
-            }
-        } else {
-            float slope = (float) deltaX / (float) deltaY;
-            for (int i = signY; Math.abs(i) <= Math.abs(deltaY); i += signY) {
-                int value = Math.round((slope * i));
+            } else {
                 currentPosition.x = posX + value;
                 currentPosition.y = posY + i;
-                if (matrix.isPointInBounds(currentPosition)) {
-                    if (isPositionEmpty(matrix, currentPosition)) {
-                        lastValidPosition = currentPosition.cpy();
-                    } else {
-                        collision();
-                        break;
-                    }
+            }
+            if (matrix.isPointInBounds(currentPosition)) {
+                if (canMoveToPosition(matrix, currentPosition)) {
+                    lastValidPosition = currentPosition.cpy();
+                    reactToNeighbours(matrix);
                 } else {
-                    //collision();
+                    collision();
+
                     break;
                 }
+            } else {
+                break;
             }
         }
-        if (!position.epsilonEquals(lastValidPosition))
+
+        if (!position.epsilonEquals(lastValidPosition)) {
             moveToPoint(matrix, lastValidPosition);
+            movedInLastFrame=true;
+        } else {
+            if (!movedInLastFrame) {
+                settle();
+            } else
+                movedInLastFrame = false;
+        }
 
         Gravity.applyGravity(this);
     }
@@ -164,51 +153,20 @@ public class MovableSolid extends Cell {
         //velocity.y = 0;
     }
 
-    private boolean processCollision(Vector2 neighbourPosition, Vector2 lastValidPosition, GameMap matrix) {
-        Vector2 normalisedVelocity = velocity.cpy().nor();
-        Cell neighbour = matrix.getCellAtPosition(neighbourPosition);
-        boolean moved = false;
+    private void reactToNeighbours(GameMap matrix) {
+        List<Cell> neighbours = matrix.getAllNeighbours(position);
+        for (Cell neighbour : neighbours)
+            processNeighbour(matrix, neighbour);
+    }
 
+    private void processNeighbour(GameMap matrix, Cell neighbour) {
         if (neighbour instanceof MovableSolid) {
-            if (neighbour.getMass() > getMass()) {
-                matrix.swapCellsAtPosition(lastValidPosition, neighbourPosition);
-                if (!position.epsilonEquals(neighbourPosition))
-                    matrix.swapCellsAtPosition(position, lastValidPosition);
-            } else {
-                //velocity.x = 0;
-                //velocity.y = 0;
-                findAnotherWay();
+            if(movedInLastFrame)
+            if (RandomGenerator.getBoolean(1f - settleProbability)) {
+                ((MovableSolid) neighbour).unSettle();
             }
-            moved = true;
-        } else if (neighbour instanceof ImmovableSolid) {
-
-        } else if (neighbour instanceof Fluid) {
-            if (neighbour.getMass() < getMass()) {
-                matrix.swapCellsAtPosition(lastValidPosition, neighbourPosition);
-                if (!position.epsilonEquals(neighbourPosition))
-                    matrix.swapCellsAtPosition(position, lastValidPosition);
-            } else {
-                findAnotherWay();
-            }
-            moved = true;
         }
-        return moved;
     }
 
-    public void findAnotherWay() {
-
-        //Vector2 deltaVector = lastValidPosition.cpy().sub(neighbourPosition);
-        //boolean isCollisionDiagonal = deltaVector.x != 0 && deltaVector.y != 0;
-        Vector2 gravity = Gravity.getVector();
-        gravity.setLength(velocity.len() * 0.6f);
-        if (RandomGenerator.getBoolean()) {
-            gravity.rotateDeg(45f);
-            velocity = gravity;
-        } else {
-            gravity.rotateDeg(-45f);
-            velocity = gravity;
-        }
-        //velocity.scl(.6f);
-    }
 
 }

@@ -1,5 +1,7 @@
 package com.kiczu.FallingSand.input;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
@@ -13,6 +15,9 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.SPACE) {
+            inputManager.switchType();
+        }
         return false;
     }
 
@@ -23,11 +28,14 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
+
+
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
 
         return false;
     }
@@ -39,7 +47,12 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        inputManager.paintWithBrush();return false;
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            inputManager.paintWithBrush();
+        } else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            inputManager.eraseWithBrush();
+        }
+        return false;
     }
 
     @Override
@@ -49,6 +62,8 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        System.out.println(amountX + "  " + amountY);
+        inputManager.changeBrushSize(amountY);
         return false;
     }
 }
