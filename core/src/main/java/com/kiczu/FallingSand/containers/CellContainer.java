@@ -51,7 +51,8 @@ public class CellContainer {
     }
 
     public void isUpdated(boolean isUpdated) {
-        this.isUpdated = isUpdated; physicalCell.isUpdated(isUpdated);
+        this.isUpdated = isUpdated;
+        physicalCell.isUpdated(isUpdated);
     }
 
     public boolean canCellMoveHere(Cell cell) {

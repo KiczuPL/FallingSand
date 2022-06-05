@@ -17,7 +17,6 @@ public class MovableSolid extends Cell {
     protected boolean isSettled;
 
 
-
     public MovableSolid(Vector2 position) {
         super(position);
         collidedLastFrame = false;
@@ -28,6 +27,10 @@ public class MovableSolid extends Cell {
         if (isUpdated)
             return;
         isUpdated = true;
+
+        updateDependingOnSpecialFeatures(matrix);
+        if (isRemoved)
+            return;
 
 
         Cell neighbourBelow = matrix.getCellAtPosition(position.cpy().sub(0, 1));
@@ -125,7 +128,7 @@ public class MovableSolid extends Cell {
 
         if (!position.epsilonEquals(lastValidPosition)) {
             moveToPoint(matrix, lastValidPosition);
-            movedInLastFrame=true;
+            movedInLastFrame = true;
         } else {
             if (!movedInLastFrame) {
                 settle();
@@ -146,7 +149,7 @@ public class MovableSolid extends Cell {
         isSettled = false;
     }
 
-    public float getSettleProbability(){
+    public float getSettleProbability() {
         return settleProbability;
     }
 
@@ -165,10 +168,10 @@ public class MovableSolid extends Cell {
     private void processNeighbour(GameMap matrix, Cell neighbour) {
         if (neighbour instanceof MovableSolid) {
             MovableSolid n = ((MovableSolid) neighbour);
-            if(movedInLastFrame)
-            if (RandomGenerator.getBoolean(1f - n.settleProbability)) {
-                n.unSettle();
-            }
+            if (movedInLastFrame)
+                if (RandomGenerator.getBoolean(1f - n.settleProbability)) {
+                    n.unSettle();
+                }
         }
     }
 

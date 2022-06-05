@@ -2,13 +2,12 @@ package com.kiczu.FallingSand.cells.gas;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
-import com.kiczu.FallingSand.cells.solid.movable.MovableSolid;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
 import com.kiczu.FallingSand.utils.Gravity;
 import com.kiczu.FallingSand.utils.RandomGenerator;
 
-import java.util.List;
+
 
 public abstract class Gas extends Cell {
     public Gas(Vector2 position) {
@@ -22,9 +21,9 @@ public abstract class Gas extends Cell {
         isUpdated = true;
 
 
-        if (isRemoved) {
+        updateDependingOnSpecialFeatures(matrix);
+        if (isRemoved)
             return;
-        }
 
 
         float rand1 = RandomGenerator.getFromRange(-1, 3);

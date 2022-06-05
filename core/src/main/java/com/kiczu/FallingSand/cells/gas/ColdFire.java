@@ -9,17 +9,17 @@ import com.kiczu.FallingSand.cells.interfaces.HeatConductive;
 import com.kiczu.FallingSand.containers.GameMap;
 import com.kiczu.FallingSand.utils.RandomGenerator;
 
-public class Fire extends Gas implements Aging, Destructible, HeatConductive {
+public class ColdFire extends Gas implements Aging, Destructible, HeatConductive {
 
 
-    public Fire(Vector2 position) {
+    public ColdFire(Vector2 position) {
         super(position);
         mass = 1f;
-        color = Color.YELLOW;
+        color = Color.WHITE;
         lifeSpan = RandomGenerator.getIntFromRange(20, 30);
         isBurning = true;
-        heatCapacity = 100000f;
-        temperature = 600f;
+        heatCapacity =  100000f;
+        temperature = -200f;
     }
 
 
@@ -33,7 +33,7 @@ public class Fire extends Gas implements Aging, Destructible, HeatConductive {
     public void age(GameMap matrix) {
         lifeSpan--;
         if (lifeSpan == 25) {
-            color = Color.RED;
+            color = Color.ROYAL;
         }
 
         if (lifeSpan == 0) {
@@ -44,7 +44,7 @@ public class Fire extends Gas implements Aging, Destructible, HeatConductive {
     @Override
     public void updateHeat(GameMap matrix) {
         exchangeHeat(matrix);
-        if (temperature < 300f) {
+        if (temperature > -100f) {
             die(matrix);
         }
     }

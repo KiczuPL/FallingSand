@@ -23,15 +23,19 @@ public abstract class Fluid extends Cell {
             return;
         isUpdated = true;
 
-        velocity.x *=0.95f;
+        updateDependingOnSpecialFeatures(matrix);
+        if (isRemoved)
+            return;
+
+        velocity.x *= 0.95f;
         Vector2 desiredPosition = position.cpy().add(velocity);
         Vector2 neighbourBelow = position.cpy().sub(0, 1);
-        if(collidedLastFrame) {
+        if (collidedLastFrame) {
             if (matrix.getCellAtPosition(neighbourBelow).getMass() >= mass) {
                 float disp = RandomGenerator.getBoolean() ? -dispersionFactor : dispersionFactor;
                 desiredPosition = position.cpy().add(disp, 0);
                 if (!canMoveToPosition(matrix, desiredPosition))
-                    desiredPosition = position.cpy().sub( disp, 0);
+                    desiredPosition = position.cpy().sub(disp, 0);
                 velocity.x = desiredPosition.x - position.x;
                 velocity.y = desiredPosition.y - position.y;
             }

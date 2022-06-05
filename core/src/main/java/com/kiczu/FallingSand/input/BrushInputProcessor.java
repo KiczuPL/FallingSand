@@ -62,7 +62,6 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        System.out.println(amountX + "  " + amountY);
         inputManager.changeBrushSize(amountY);
         return false;
     }

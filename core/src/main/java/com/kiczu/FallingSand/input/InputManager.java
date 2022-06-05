@@ -54,6 +54,7 @@ public class InputManager {
                 pos.y = brush.y + j;
                 matrix.spawnCellAtPosition(pos, selectedCellType);
             }
+        //System.out.println(matrix.getCellAtPosition(pos).getTemperature());
     }
 
     public void eraseWithBrush() {
@@ -69,11 +70,12 @@ public class InputManager {
     }
 
     public void switchType() {
-        CellType[] t = new CellType[4];
+        CellType[] t = new CellType[5];
         t[0] = CellType.SAND;
         t[1] = CellType.WATER;
         t[2] = CellType.WOOD;
         t[3] = CellType.FIRE;
+        t[4] = CellType.COLD_FIRE;
         if (sel + 1 < t.length) {
             sel++;
         } else {

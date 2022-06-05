@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.interfaces.Aging;
 import com.kiczu.FallingSand.cells.interfaces.Flammable;
+import com.kiczu.FallingSand.cells.interfaces.HeatConductive;
 import com.kiczu.FallingSand.cells.solid.immovable.ImmovableSolid;
 import com.kiczu.FallingSand.containers.CellContainer;
 import com.kiczu.FallingSand.containers.GameMap;
+
+import java.util.List;
 
 public abstract class Cell {
 
@@ -16,9 +19,10 @@ public abstract class Cell {
     protected Color color;
     protected float mass;
 
-    protected int heatCapacity;
-    protected int heatConductivity;
-    protected int temperature;
+    protected float heatCapacity;
+    protected float temperature;
+    protected float heatConductivityFactor;
+    protected boolean isHeatUpdated;
 
     protected boolean isBurning;
     protected boolean isRemoved;
@@ -41,10 +45,13 @@ public abstract class Cell {
         isUpdated = false;
         isBurning = false;
         isRemoved = false;
+        isHeatUpdated = false;
         maxHitPoints = 100;
         hitPoints = maxHitPoints;
         flammabilityResistance = 1f;
-
+        temperature = 21f;
+        heatCapacity = 1f;
+        heatConductivityFactor = 1f;
         velocity = new Vector2(0, 0);
     }
 
@@ -72,8 +79,17 @@ public abstract class Cell {
         return velocity;
     }
 
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
+
     public void isUpdated(boolean isUpdated) {
         this.isUpdated = isUpdated;
+        isHeatUpdated = isUpdated;
     }
 
     public abstract void update(GameMap matrix, CellContainer parentContainer);
@@ -91,15 +107,48 @@ public abstract class Cell {
     }
 
     public void updateDependingOnSpecialFeatures(GameMap matrix) {
-        if (this instanceof Flammable) {
+        if (this instanceof Flammable)
             ((Flammable) this).checkFlammability(matrix);
-        }
+        if (this instanceof HeatConductive)
+            ((HeatConductive) this).updateHeat(matrix);
     }
 
-    public void ageIfPossible(GameMap matrix) {
-        if (this instanceof Aging) {
-            ((Aging) this).age(matrix);
+    public void exchangeHeat(GameMap matrix) {
+        if (isHeatUpdated)
+            return;
+        isHeatUpdated = true;
+        List<Cell> neighbours = matrix.getAllNeighbours(position);
+        float tempDifferenceSum = 0f;
+        int conductiveNeighbours = 0;
+        for (Cell neighbour : neighbours) {
+            if (neighbour instanceof HeatConductive && !neighbour.isHeatUpdated) {
+                tempDifferenceSum += Math.abs(temperature - neighbour.temperature);
+                conductiveNeighbours++;
+            }
         }
+        if (conductiveNeighbours == 0 || tempDifferenceSum == 0f)
+            return;
+
+        float tempDifferenceAvg = tempDifferenceSum / (float) conductiveNeighbours;
+
+        float tempDifference = 0f;
+
+        for (Cell neighbour : neighbours) {
+            if (neighbour instanceof HeatConductive && !neighbour.isHeatUpdated) {
+                float temp = neighbour.getTemperature();
+                neighbour.temperature += heatConductivityFactor * (((temperature - temp) - tempDifferenceAvg) / tempDifferenceAvg) * (heatCapacity / neighbour.heatCapacity);
+                tempDifference += (((temperature - temp) - tempDifferenceAvg) / tempDifferenceAvg) * (neighbour.heatCapacity / heatCapacity);
+                neighbour.isHeatUpdated = true;
+            }
+        }
+        this.temperature -= heatConductivityFactor * tempDifference;
+
+    }
+
+
+    public void ageIfPossible(GameMap matrix) {
+        if (this instanceof Aging)
+            ((Aging) this).age(matrix);
     }
 
     public boolean isBurning() {
