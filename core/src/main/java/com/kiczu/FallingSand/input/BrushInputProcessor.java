@@ -35,13 +35,18 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            inputManager.paintWithBrush();
+        } else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            inputManager.eraseWithBrush();
+        }
 
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        inputManager.untouchBrush();
         return false;
     }
 

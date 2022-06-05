@@ -22,6 +22,8 @@ public class InputManager {
     private CellType selectedCellType;
     private int sel = 0;
 
+    private Vector2 lastFrameBrushPosition;
+
     private int brushSize;
 
     private BrushInputProcessor brushInputProcessor;
@@ -47,14 +49,62 @@ public class InputManager {
     public void paintWithBrush() {
         int brushSize2 = 2 * brushSize;
         Vector2 brush = getBrushPosition().sub(brushSize, brushSize);
-        Vector2 pos = new Vector2();
-        for (int i = 0; i < brushSize2; i++)
-            for (int j = 0; j < brushSize2; j++) {
-                pos.x = brush.x + i;
-                pos.y = brush.y + j;
-                matrix.spawnCellAtPosition(pos, selectedCellType);
-            }
+        // Vector2 pos = new Vector2();
+        // for (int i = 0; i < brushSize2; i++)
+        //     for (int j = 0; j < brushSize2; j++) {
+        //        pos.x = brush.x + i;
+        //        pos.y = brush.y + j;
+        //        matrix.spawnCellAtPosition(pos, selectedCellType);
+        //    }
         //System.out.println(matrix.getCellAtPosition(pos).getTemperature());
+        if (lastFrameBrushPosition == null) {
+            lastFrameBrushPosition = getBrushPosition();
+        }
+
+        Vector2 currentPosition = lastFrameBrushPosition;
+        Vector2 desiredPosition = getBrushPosition();
+
+        int posX = (int) currentPosition.x;
+        int posY = (int) currentPosition.y;
+
+        int deltaX = (int) (desiredPosition.x - currentPosition.x);
+        int deltaY = (int) (desiredPosition.y - currentPosition.y);
+
+        boolean isDeltaXBigger = Math.abs(deltaX) >= Math.abs(deltaY);
+
+        int sign;
+        float slope;
+        int delta;
+
+        if (isDeltaXBigger) {
+            slope = (float) deltaY / (float) deltaX;
+            sign = deltaX < 0 ? -1 : 1;
+            delta = deltaX;
+        } else {
+            slope = (float) deltaX / (float) deltaY;
+            sign = deltaY < 0 ? -1 : 1;
+            delta = deltaY;
+        }
+
+        for (int i = 0; Math.abs(i) <= Math.abs(delta); i += sign) {
+            int value = Math.round((slope * i));
+
+            if (isDeltaXBigger) {
+                currentPosition.x = posX + i;
+                currentPosition.y = posY + value;
+            } else {
+                currentPosition.x = posX + value;
+                currentPosition.y = posY + i;
+            }
+            Vector2 pos = new Vector2();
+            for (int r = 0; r < brushSize2; r++)
+                for (int c = 0; c < brushSize2; c++) {
+                    pos.x = currentPosition.x + r - brushSize;
+                    pos.y = currentPosition.y + c - brushSize;
+                    matrix.spawnCellAtPosition(pos, selectedCellType);
+                }
+        }
+        lastFrameBrushPosition = currentPosition;
     }
 
     public void eraseWithBrush() {
@@ -92,6 +142,10 @@ public class InputManager {
                 brushSize--;
             }
         }
+    }
+
+    public void untouchBrush(){
+        lastFrameBrushPosition = null;
     }
 
     public Vector2 getBrushPosition() {
