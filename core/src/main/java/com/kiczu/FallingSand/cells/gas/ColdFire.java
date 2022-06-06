@@ -18,8 +18,9 @@ public class ColdFire extends Gas implements Aging, Destructible, HeatConductive
         color = Color.WHITE;
         lifeSpan = RandomGenerator.getIntFromRange(20, 30);
         isBurning = true;
-        heatCapacity =  100000f;
-        temperature = -200f;
+        heatCapacity =  200000f;
+        temperature = -273f;
+        spreadRate =5f;
     }
 
 

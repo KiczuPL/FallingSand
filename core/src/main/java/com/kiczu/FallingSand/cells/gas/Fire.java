@@ -18,8 +18,9 @@ public class Fire extends Gas implements Aging, Destructible, HeatConductive {
         color = Color.YELLOW;
         lifeSpan = RandomGenerator.getIntFromRange(20, 30);
         isBurning = true;
-        heatCapacity = 100000f;
+        heatCapacity = 200000f;
         temperature = 600f;
+        spreadRate = 5f;
     }
 
 

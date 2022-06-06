@@ -16,7 +16,7 @@ public class Water extends Fluid implements HeatConductive {
         dispersionFactor = 5f;
         temperature = 21f;
         heatCapacity = 4200f;
-        heatConductivityFactor = 0.2f;
+        heatConductivityFactor = 0.9f;
     }
 
     @Override

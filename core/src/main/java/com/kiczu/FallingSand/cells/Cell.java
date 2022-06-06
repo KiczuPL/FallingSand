@@ -136,12 +136,13 @@ public abstract class Cell {
         for (Cell neighbour : neighbours) {
             if (neighbour instanceof HeatConductive && !neighbour.isHeatUpdated) {
                 float temp = neighbour.getTemperature();
-                neighbour.temperature += heatConductivityFactor * (((temperature - temp) - tempDifferenceAvg) / tempDifferenceAvg) * (heatCapacity / neighbour.heatCapacity);
-                tempDifference += (((temperature - temp) - tempDifferenceAvg) / tempDifferenceAvg) * (neighbour.heatCapacity / heatCapacity);
+                float factor = heatConductivityFactor * neighbour.heatConductivityFactor;
+                neighbour.temperature += factor * (((temperature - temp) - tempDifferenceAvg) / tempDifferenceAvg) * (heatCapacity / neighbour.heatCapacity);
+                tempDifference += factor * (((temperature - temp) - tempDifferenceAvg) / tempDifferenceAvg) * (neighbour.heatCapacity / heatCapacity);
                 neighbour.isHeatUpdated = true;
             }
         }
-        this.temperature -= heatConductivityFactor * tempDifference;
+        this.temperature -= tempDifference;
 
     }
 

@@ -13,8 +13,8 @@ public class Ice extends ImmovableSolid implements HeatConductive {
         color = new Color(183, 180, 253,1);
         mass = 700f;
         temperature = -5f;
-        heatCapacity = 2100f;
-        heatConductivityFactor = 0.2f;
+        heatCapacity = 3100f;
+        heatConductivityFactor = 0.98f;
     }
 
     @Override

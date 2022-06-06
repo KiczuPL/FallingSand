@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Wall extends ImmovableSolid {
     public Wall(Vector2 position) {
         super(position);
-        color = Color.DARK_GRAY;
+        color = Color.GRAY;
         mass = Float.MAX_VALUE;
     }
 }

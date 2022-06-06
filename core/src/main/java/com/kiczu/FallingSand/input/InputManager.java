@@ -7,16 +7,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kiczu.FallingSand.cells.Cell;
+import com.kiczu.FallingSand.FallingSand;
 import com.kiczu.FallingSand.cells.CellType;
 import com.kiczu.FallingSand.containers.GameMap;
 import com.kiczu.FallingSand.ui.BrushActor;
+import com.kiczu.FallingSand.ui.ControlMenu;
 
 public class InputManager {
     private GameMap matrix;
     private OrthographicCamera camera;
     private Viewport viewport;
     private Stage inputStage;
+
+    private ControlMenu controlMenu;
+    private boolean isControlMenuActive;
 
     private Brush brush;
     private CellType selectedCellType;
@@ -29,6 +33,7 @@ public class InputManager {
     private BrushInputProcessor brushInputProcessor;
 
     public InputManager(GameMap matrix, OrthographicCamera camera, Viewport viewport, ShapeRenderer shapeRenderer) {
+        isControlMenuActive = false;
         this.matrix = matrix;
         this.camera = camera;
         this.viewport = viewport;
@@ -39,6 +44,7 @@ public class InputManager {
         inputStage = new Stage(viewport);
         inputStage.addActor(new BrushActor(brush, shapeRenderer));
 
+        controlMenu = new ControlMenu(this, viewport);
 
         brushInputProcessor = new BrushInputProcessor(this);
 
@@ -47,22 +53,13 @@ public class InputManager {
     }
 
     public void paintWithBrush() {
-        int brushSize2 = 2 * brushSize;
-        Vector2 brush = getBrushPosition().sub(brushSize, brushSize);
-        // Vector2 pos = new Vector2();
-        // for (int i = 0; i < brushSize2; i++)
-        //     for (int j = 0; j < brushSize2; j++) {
-        //        pos.x = brush.x + i;
-        //        pos.y = brush.y + j;
-        //        matrix.spawnCellAtPosition(pos, selectedCellType);
-        //    }
-        //System.out.println(matrix.getCellAtPosition(pos).getTemperature());
+        int brushSize2 = 2 * brushSize - 1;
         if (lastFrameBrushPosition == null) {
-            lastFrameBrushPosition = getBrushPosition();
+            lastFrameBrushPosition = getBrushPositionOnMap().scl(1 / FallingSand.cellPixelSize);
         }
 
         Vector2 currentPosition = lastFrameBrushPosition;
-        Vector2 desiredPosition = getBrushPosition();
+        Vector2 desiredPosition = getBrushPositionOnMap().scl(1 / FallingSand.cellPixelSize);
 
         int posX = (int) currentPosition.x;
         int posY = (int) currentPosition.y;
@@ -107,31 +104,8 @@ public class InputManager {
         lastFrameBrushPosition = currentPosition;
     }
 
-    public void eraseWithBrush() {
-        int brushSize2 = 2 * brushSize;
-        Vector2 brush = getBrushPosition().sub(brushSize, brushSize);
-        Vector2 pos = new Vector2();
-        for (int i = 0; i < brushSize2; i++)
-            for (int j = 0; j < brushSize2; j++) {
-                pos.x = brush.x + i;
-                pos.y = brush.y + j;
-                matrix.eraseCellAtPosition(pos);
-            }
-    }
-
-    public void switchType() {
-        CellType[] t = new CellType[5];
-        t[0] = CellType.SAND;
-        t[1] = CellType.WATER;
-        t[2] = CellType.WOOD;
-        t[3] = CellType.FIRE;
-        t[4] = CellType.COLD_FIRE;
-        if (sel + 1 < t.length) {
-            sel++;
-        } else {
-            sel = 0;
-        }
-        selectedCellType = t[sel];
+    public void setSelectedCellType(CellType cellType) {
+        selectedCellType = cellType;
     }
 
     public void changeBrushSize(float c) {
@@ -144,22 +118,46 @@ public class InputManager {
         }
     }
 
-    public void untouchBrush(){
+    public void unTouchBrush() {
         lastFrameBrushPosition = null;
     }
 
-    public Vector2 getBrushPosition() {
+    public Vector2 getBrushPositionOnMap() {
         Vector3 position = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(position);
+        position.x -= position.x % FallingSand.cellPixelSize - FallingSand.cellPixelSize;
+        position.y -= position.y % FallingSand.cellPixelSize - FallingSand.cellPixelSize;
+
+
+        Vector2 v = new Vector2(position.x, position.y).scl(1 / FallingSand.cellPixelSize).sub(1,1);
+        if (matrix.isPointInBounds(v))
+            System.out.println(""+matrix.getCellAtPosition(v).getClass() + " : " +  matrix.getCellAtPosition(v).getTemperature());
+
         return new Vector2(position.x, position.y);
     }
 
-    public int getBrushSize() {
-        return brushSize;
+
+    public int getBrushPixelSize() {
+        return brushSize * (int) FallingSand.cellPixelSize;
     }
 
-    public void drawBrush() {
-        inputStage.draw();
+    public void drawControlUIElements() {
+        if (isControlMenuActive) {
+            controlMenu.draw();
+        } else {
+            inputStage.draw();
+        }
+    }
+
+    public void setMenuActive() {
+        isControlMenuActive = true;
+        controlMenu.setPosition(getBrushPositionOnMap());
+        Gdx.input.setInputProcessor(controlMenu.getInputProcessor());
+    }
+
+    public void closeMenu() {
+        isControlMenuActive = false;
+        Gdx.input.setInputProcessor(brushInputProcessor);
     }
 
 }

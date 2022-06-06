@@ -19,45 +19,24 @@ public class GameMap {
     private int worldWidth;
     private int worldHeight;
 
-    private int chunkSize;
+
+    private float cellPixelSize;
 
     private ArrayList<Integer> indexes;
 
     private List<CellContainer> containers;
 
 
-    public GameMap(int chunkSize, int horizontalChunks, int verticalChunks) {
-        worldWidth = chunkSize * horizontalChunks;
-        worldHeight = chunkSize * verticalChunks;
-        this.chunkSize = chunkSize;
+    public GameMap(int worldWidth, int worldHeight, float cellPixelSize) {
+        this.worldWidth = worldWidth;
+        this.worldHeight = worldHeight;
+        this.cellPixelSize = cellPixelSize;
         int size = worldHeight * worldWidth;
 
         containers = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             containers.add(new CellContainer(getPointFromIndex(i)));
         }
-
-
-        for (int i = worldHeight / 2; i < worldHeight - 20; i++) {
-            for (int j = worldWidth / 2; j < worldWidth - 50; j++) {
-                Vector2 v = new Vector2(j, i);
-                //setCellAtPosition(v, new Sand(v));
-            }
-        }
-
-        for (int i = 5; i < worldHeight / 2 - 20; i++) {
-            for (int j = worldWidth / 2; j < worldWidth - worldHeight / 4; j++) {
-                Vector2 v = new Vector2(j, i);
-                //setCellAtPosition(v, new Water(v));
-            }
-        }
-        for (int i = 0; i < worldWidth - worldWidth / 3; i++) {
-            Vector2 v = new Vector2(i, worldHeight / 2);
-            setCellAtPosition(v, new Wood(v));
-
-        }
-        Vector2 v = new Vector2(worldWidth / 4, worldHeight / 5 * 4);
-        setCellAtPosition(v, new Water(v));
 
 
         setUpWalls();
@@ -160,15 +139,18 @@ public class GameMap {
     }
 
     public void spawnCellAtPosition(Vector2 position, CellType cellType) {
-        if (isPointInBounds(position) && getCellAtPosition(position) instanceof EmptyCell) {
-            setCellAtPosition(position, cellType.create(position));
-        }
-    }
+        if (!isPointInBounds(position))
+            return;
 
-    public void eraseCellAtPosition(Vector2 position) {
-        if (isPointInBounds(position)) {
-            setCellAtPosition(position, new EmptyCell(position));
+        Cell cell = getCellAtPosition(position);
+        if (cellType == CellType.VOID && !(cell instanceof Wall) && !(cell instanceof EmptyCell)) {
+            setCellAtPosition(position, cellType.create(position));
+            cell.isRemoved(true);
+        } else if (getCellAtPosition(position) instanceof EmptyCell) {
+            setCellAtPosition(position, cellType.create(position));
+            cell.isRemoved(true);
         }
+
     }
 
 
@@ -195,9 +177,9 @@ public class GameMap {
         for (CellContainer container : containers) {
 
             shapeRenderer.setColor(container.getColor());
-            Vector2 position = container.getPosition();
+            Vector2 position = container.getPosition().cpy().scl(cellPixelSize);
 
-            shapeRenderer.rect(position.x, position.y, 10, 10);
+            shapeRenderer.rect(position.x, position.y, cellPixelSize, cellPixelSize);
 
         }
         shapeRenderer.end();

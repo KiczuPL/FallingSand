@@ -3,10 +3,7 @@ package com.kiczu.FallingSand;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,15 +17,16 @@ import com.kiczu.FallingSand.ui.MapActor;
 
 public class FallingSand extends ApplicationAdapter {
 
-    private final int chunkSize = 20;
-    private final int horizontalChunks = 16;
-    private final int verticalChunks = 9;
 
+    public static int mapWidth = 32;
+    public static int mapHeight = 18;
 
-    public final float mapWidth = horizontalChunks * chunkSize;
-    public final float mapHeight = verticalChunks * chunkSize;
+    public static float cellPixelSize;
 
-    FPSLogger fpsLogger;
+    public static int screenWidth;
+    public static int screenHeight;
+
+    private FPSLogger fpsLogger;
 
     private ShapeRenderer shapeRenderer;
     public GameMap matrix;
@@ -48,7 +46,12 @@ public class FallingSand extends ApplicationAdapter {
 
         fpsLogger = new FPSLogger();
 
-        matrix = new GameMap(chunkSize, horizontalChunks, verticalChunks);
+        screenWidth = Gdx.graphics.getWidth();
+        screenHeight = Gdx.graphics.getHeight();
+
+        cellPixelSize = (float) screenWidth / (float) mapWidth;
+
+        matrix = new GameMap(mapWidth, mapHeight, cellPixelSize);
 
 
         shapeRenderer = new ShapeRenderer();
@@ -57,22 +60,21 @@ public class FallingSand extends ApplicationAdapter {
 
 
         float aspectRatio = (float) Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth();
-        viewport = new FitViewport(mapWidth, mapHeight, camera);
+        viewport = new FitViewport(screenWidth, screenHeight, camera);
 
 
         matrixStage = new Stage(viewport);
         matrixStage.addActor(new MapActor(matrix, shapeRenderer));
 
 
-        camera.position.set(mapWidth / 2, mapHeight / 2, 0);
+        camera.position.set(screenWidth / 2, screenHeight / 2, 0);
 
-
+        inputManager = new InputManager(matrix, camera, viewport, shapeRenderer);
         matrixStage = new Stage(viewport);
         mapActor = new MapActor(matrix, shapeRenderer);
         matrixStage.addActor(mapActor);
 
 
-        inputManager = new InputManager(matrix, camera, viewport, shapeRenderer);
     }
 
     @Override
@@ -84,8 +86,7 @@ public class FallingSand extends ApplicationAdapter {
         fpsLogger.log();
         matrix.updateAll();
         matrixStage.draw();
-        inputManager.drawBrush();
-
+        inputManager.drawControlUIElements();
     }
 
     public void resize(int width, int height) {

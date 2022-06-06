@@ -8,8 +8,10 @@ import com.kiczu.FallingSand.utils.Gravity;
 import com.kiczu.FallingSand.utils.RandomGenerator;
 
 
-
 public abstract class Gas extends Cell {
+
+    protected float spreadRate;
+
     public Gas(Vector2 position) {
         super(position);
     }
@@ -26,8 +28,8 @@ public abstract class Gas extends Cell {
             return;
 
 
-        float rand1 = RandomGenerator.getFromRange(-1, 3);
-        float rand2 = RandomGenerator.getFromRange(-2, 5);
+        float rand1 = RandomGenerator.getFromRange(1-spreadRate/2, spreadRate);
+        float rand2 = RandomGenerator.getFromRange(1-spreadRate/2, spreadRate);
         velocity.x += rand1;
         velocity.y += rand2;
 

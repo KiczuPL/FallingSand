@@ -1,12 +1,9 @@
-package com.kiczu.FallingSand.cells.solid.immovable;
-
+package com.kiczu.FallingSand.cells.solid.movable;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.kiczu.FallingSand.cells.Cell;
-import com.kiczu.FallingSand.cells.CellType;
 import com.kiczu.FallingSand.cells.EmptyCell;
-import com.kiczu.FallingSand.cells.fluid.Water;
 import com.kiczu.FallingSand.cells.gas.Fire;
 import com.kiczu.FallingSand.cells.interfaces.Destructible;
 import com.kiczu.FallingSand.cells.interfaces.Flammable;
@@ -16,19 +13,27 @@ import com.kiczu.FallingSand.utils.RandomGenerator;
 
 import java.util.List;
 
-public class Wood extends ImmovableSolid implements Flammable, Destructible, HeatConductive {
+public class Coal extends MovableSolid implements Flammable, Destructible, HeatConductive {
 
-    public Wood(Vector2 position) {
+    public Coal(Vector2 position) {
         super(position);
-        color = Color.BROWN;
-        mass = 2000f;
-        maxHitPoints = 100;
+        color = new Color(0x444444ff);
+        mass = 1442f;
+        frictionFactor = 0.32f;
+        settleProbability = 0.25f;
+
+        maxHitPoints = 200;
         hitPoints = maxHitPoints;
-        flammabilityResistance = 0.8f;
+        flammabilityResistance = 0.87f;
 
-        heatCapacity = 2500;
-        heatConductivityFactor = 0.4f;
+        heatCapacity = 1500;
+        heatConductivityFactor = 0.45f;
+    }
 
+    @Override
+    public void die(GameMap matrix) {
+        matrix.setCellAtPosition(position, new EmptyCell(position));
+        isRemoved = true;
     }
 
     @Override
@@ -62,15 +67,9 @@ public class Wood extends ImmovableSolid implements Flammable, Destructible, Hea
     }
 
     @Override
-    public void die(GameMap matrix) {
-        matrix.setCellAtPosition(position, new EmptyCell(position));
-        isRemoved = true;
-    }
-
-    @Override
     public void updateHeat(GameMap matrix) {
         exchangeHeat(matrix);
-        if (temperature > 300f) {
+        if (temperature > 350f) {
             isBurning = true;
         }
     }
