@@ -9,7 +9,7 @@ public class Steel extends ImmovableSolid implements HeatConductive {
 
     public Steel(Vector2 position) {
         super(position);
-        color = Color.DARK_GRAY;
+        color = new Color(0x444444ff);
         mass = 7860f;
 
         heatCapacity = 1452;
@@ -20,6 +20,5 @@ public class Steel extends ImmovableSolid implements HeatConductive {
     @Override
     public void updateHeat(GameMap matrix) {
         exchangeHeat(matrix);
-        color = color.cpy().add(temperature-21f,0,0,0);
     }
 }

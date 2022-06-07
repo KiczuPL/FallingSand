@@ -33,6 +33,5 @@ public class Water extends Fluid implements HeatConductive {
             matrix.setCellAtPosition(position, c);
             isRemoved = true;
         }
-        //color = new Color(100f+temperature,100f+temperature,100f+temperature,1f);
     }
 }

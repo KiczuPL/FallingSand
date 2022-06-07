@@ -17,7 +17,7 @@ public class Coal extends MovableSolid implements Flammable, Destructible, HeatC
 
     public Coal(Vector2 position) {
         super(position);
-        color = new Color(0x444444ff);
+        color = new Color(0x333333ff);
         mass = 1442f;
         frictionFactor = 0.32f;
         settleProbability = 0.25f;
@@ -71,6 +71,8 @@ public class Coal extends MovableSolid implements Flammable, Destructible, HeatC
         exchangeHeat(matrix);
         if (temperature > 350f) {
             isBurning = true;
+        } else if (temperature < 250f) {
+            isBurning = false;
         }
     }
 }

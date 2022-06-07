@@ -3,6 +3,7 @@ package com.kiczu.FallingSand;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,13 +19,15 @@ import com.kiczu.FallingSand.ui.MapActor;
 public class FallingSand extends ApplicationAdapter {
 
 
-    public static int mapWidth = 32;
-    public static int mapHeight = 18;
+    public static int mapWidth = 320;
+    public static int mapHeight = 180;
 
     public static float cellPixelSize;
 
     public static int screenWidth;
     public static int screenHeight;
+
+    private boolean isRunning = true;
 
     private FPSLogger fpsLogger;
 
@@ -37,6 +40,11 @@ public class FallingSand extends ApplicationAdapter {
     private Viewport viewport;
 
     private InputManager inputManager;
+
+
+    private long startTime;
+    private long elapsedTime;
+    private long speed = 10000000;
 
     @Override
     public void create() {
@@ -69,24 +77,46 @@ public class FallingSand extends ApplicationAdapter {
 
         camera.position.set(screenWidth / 2, screenHeight / 2, 0);
 
-        inputManager = new InputManager(matrix, camera, viewport, shapeRenderer);
+        inputManager = new InputManager(this, matrix, camera, viewport, shapeRenderer);
         matrixStage = new Stage(viewport);
         mapActor = new MapActor(matrix, shapeRenderer);
         matrixStage.addActor(mapActor);
 
-
+        startTime = 1;
+        elapsedTime = 0;
     }
 
     @Override
     public void render() {
-        //Gdx.gl.glClearColor(0f, 1, 1, 1f);
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        startTime = System.nanoTime();
+        Gdx.gl.glClearColor(0f, 1, 1, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ScreenUtils.clear(0, 0, 0, 1);
 
-        fpsLogger.log();
-        matrix.updateAll();
+        //fpsLogger.log();
+
+        System.out.println(speed);
+        if (isRunning && elapsedTime >= speed) {
+            matrix.updateAll();
+            elapsedTime = 0;
+        }
+
+
         matrixStage.draw();
         inputManager.drawControlUIElements();
+        elapsedTime += (System.nanoTime() - startTime);
+    }
+
+    public void increaseSpeed() {
+        if (speed < 20000000) {
+            speed += 2000000;
+        }
+    }
+
+    public void decreaseSpeed() {
+        if (speed >= 10000000) {
+            speed -= 2000000;
+        }
     }
 
     public void resize(int width, int height) {
@@ -96,5 +126,13 @@ public class FallingSand extends ApplicationAdapter {
     @Override
     public void dispose() {
 
+    }
+
+    public void isRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 }

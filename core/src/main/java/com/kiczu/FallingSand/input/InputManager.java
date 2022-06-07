@@ -14,6 +14,7 @@ import com.kiczu.FallingSand.ui.BrushActor;
 import com.kiczu.FallingSand.ui.ControlMenu;
 
 public class InputManager {
+    private FallingSand game;
     private GameMap matrix;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -32,7 +33,8 @@ public class InputManager {
 
     private BrushInputProcessor brushInputProcessor;
 
-    public InputManager(GameMap matrix, OrthographicCamera camera, Viewport viewport, ShapeRenderer shapeRenderer) {
+    public InputManager(FallingSand game, GameMap matrix, OrthographicCamera camera, Viewport viewport, ShapeRenderer shapeRenderer) {
+        this.game = game;
         isControlMenuActive = false;
         this.matrix = matrix;
         this.camera = camera;
@@ -129,9 +131,9 @@ public class InputManager {
         position.y -= position.y % FallingSand.cellPixelSize - FallingSand.cellPixelSize;
 
 
-        Vector2 v = new Vector2(position.x, position.y).scl(1 / FallingSand.cellPixelSize).sub(1,1);
-        if (matrix.isPointInBounds(v))
-            System.out.println(""+matrix.getCellAtPosition(v).getClass() + " : " +  matrix.getCellAtPosition(v).getTemperature());
+        Vector2 v = new Vector2(position.x, position.y).scl(1 / FallingSand.cellPixelSize).sub(1, 1);
+       // if (matrix.isPointInBounds(v))
+        //    System.out.println("" + matrix.getCellAtPosition(v).getClass() + " : " + matrix.getCellAtPosition(v).getTemperature());
 
         return new Vector2(position.x, position.y);
     }
@@ -160,4 +162,17 @@ public class InputManager {
         Gdx.input.setInputProcessor(brushInputProcessor);
     }
 
+    public void toggleRunning() {
+        game.isRunning(!game.isRunning());
+    }
+
+    public void increaseGameSpeed() {
+        System.out.println(">");
+        game.increaseSpeed();
+    }
+
+    public void decreaseGameSpeed() {
+        System.out.println("<");
+        game.decreaseSpeed();
+    }
 }

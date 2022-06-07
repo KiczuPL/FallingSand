@@ -14,6 +14,13 @@ public class BrushInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.SPACE) {
+            inputManager.toggleRunning();
+        } else if (keycode == Input.Keys.COMMA) {
+            inputManager.increaseGameSpeed();
+        } else if (keycode == Input.Keys.PERIOD) {
+            inputManager.decreaseGameSpeed();
+        }
         return false;
     }
 
