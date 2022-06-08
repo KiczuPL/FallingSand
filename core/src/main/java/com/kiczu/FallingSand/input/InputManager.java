@@ -167,12 +167,10 @@ public class InputManager {
     }
 
     public void increaseGameSpeed() {
-        System.out.println(">");
         game.increaseSpeed();
     }
 
     public void decreaseGameSpeed() {
-        System.out.println("<");
         game.decreaseSpeed();
     }
 }

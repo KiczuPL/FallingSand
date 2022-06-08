@@ -1,6 +1,7 @@
 package com.kiczu.FallingSand.cells;
 
 import com.badlogic.gdx.math.Vector2;
+import com.kiczu.FallingSand.cells.fluid.Petrol;
 import com.kiczu.FallingSand.cells.fluid.Water;
 import com.kiczu.FallingSand.cells.gas.ColdFire;
 import com.kiczu.FallingSand.cells.gas.Fire;
@@ -34,6 +35,12 @@ public enum CellType {
         @Override
         public Cell create(Vector2 position) {
             return new Water(position);
+        }
+    },
+    PETROL {
+        @Override
+        public Cell create(Vector2 position) {
+            return new Petrol(position);
         }
     },
     WOOD {
